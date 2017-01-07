@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">SpanEZ</string>
+    <string name="extract_from_mockito_book">In the previous examples, we have used when() for adding behavior to the mocks. But this way won’t work for methods that return void. If we try to use when() with a void method, the IDE will mark an error, and it won’t let us compile the code. First, we are going to change the previous example to make AuthenticatorInterface method return void, and make it throw an exception if the user has not been successfully authenticated, to give sense to the void return. We are going to create another package com.javacodegeeks.mockitotutorial.voidmethod, not to modify the previous working code.</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tincidunt est id eros pharetra eleifend. Vivamus porttitor accumsan quam, et mattis tortor fermentum quis. Quisque ut ipsum tellus. Quisque suscipit diam ut augue egestas, vel tempus nisi euismod. Curabitur accumsan molestie nisl, ut ultricies dolor molestie eget. Aliquam scelerisque, elit sit amet faucibus tincidunt, tortor purus interdum sapien, eu suscipit lorem dolor mattis libero. Morbi ut urna tempor, auctor lorem vitae, bibendum nibh. Nullam ut massa id arcu efficitur cursus. Mauris in lacus at nulla consectetur dapibus. Sed accumsan sapien nec nisi mattis pulvinar.</string>
+
+</resources>
