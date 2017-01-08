@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
@@ -28,4 +29,13 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
+}
+
+publish {
+    userOrg = 'yombunker'
+    groupId = 'com.bunk3r'
+    artifactId = 'spanez'
+    publishVersion = '1.0.0'
+    desc = 'Android library that simplifies the use of Spans inside strings'
+    website = 'https://github.com/yombunker/SpanEZ'
 }
