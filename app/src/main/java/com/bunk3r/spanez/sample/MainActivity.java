@@ -21,8 +21,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         SpanEZ.from(sample)
               .withContent(R.string.lorem_ipsum)
+              .inclusive()
+              .exclusive()
+              .inclusiveExclusive()
+              .exclusiveInclusive()
+              .bold(0, 10)
+              .italic(11, 20)
+              .underline(21, 30)
+              .foregroundColor(31, 40, R.color.colorPrimary)
+              .backgroundColor(41, 50, R.color.colorAccent)
               .subscript(0, 10)
               .superscript(20, 40)
               .scaleX(50, 80, 2.f)

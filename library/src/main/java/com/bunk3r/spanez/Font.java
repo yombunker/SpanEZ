@@ -26,6 +26,6 @@ public final class Font {
                         SANS_SERIF,
                         SANS_SERIF_LIGHT,
                         SANS_SERIF_CONDENSED})
-    public @interface Familiy {}
+    public @interface Family {}
 
 }
