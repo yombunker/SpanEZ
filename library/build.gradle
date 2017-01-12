@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
     }
 
     buildTypes {
@@ -28,7 +28,7 @@ publish {
     userOrg = 'yombunker'
     groupId = 'com.bunk3r'
     artifactId = 'spanez'
-    publishVersion = '1.0.0'
+    version = '1.0.1'
     desc = 'Android library that simplifies the use of Spans inside strings'
     website = 'https://github.com/yombunker/SpanEZ'
 }

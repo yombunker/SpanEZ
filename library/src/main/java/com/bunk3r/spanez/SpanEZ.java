@@ -265,8 +265,9 @@ public final class SpanEZ {
      * Changes the {@code ForegroundColor} of all the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start        the position of the first character in the range
+     * @param end          the position of the last character in the range
+     * @param fgColorResId the color to use for the {@code Char}
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ foregroundColor(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int fgColorResId) {
@@ -297,8 +298,9 @@ public final class SpanEZ {
      * Changes the {@code BackgroundColor} of all the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start        the position of the first character in the range
+     * @param end          the position of the last character in the range
+     * @param bgColorResId the color to use for the {@code BackgroundColor}
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ backgroundColor(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int bgColorResId) {
@@ -329,8 +331,9 @@ public final class SpanEZ {
      * Adds an {@code OnClickListener} to all the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start     the position of the first character in the range
+     * @param end       the position of the last character in the range
+     * @param spanClick the callback to call whenever the span it is clicked
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ clickable(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull OnSpanClickListener spanClick) {
@@ -357,7 +360,8 @@ public final class SpanEZ {
      * in {@code targetTexts} that exist in the {@code target} content.(Commonly this adds a vertical
      * line to the left of the paragraph, but is something dependant on the OS)
      *
-     * @param targetTexts all the {@code String} that are to be modified
+     * @param quoteColorResId the color to use for the paragraph marker
+     * @param targetTexts     all the {@code String} that are to be modified
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ quote(@ColorRes int quoteColorResId, @NonNull String... targetTexts) {
@@ -386,8 +390,9 @@ public final class SpanEZ {
      * Styles the paragraph (with the selected {@code quoteColorResId}) where all the {@code Character} within the given range exist. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start           the position of the first character in the range
+     * @param end             the position of the last character in the range
+     * @param quoteColorResId the color to use for the paragraph marker
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ quote(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int quoteColorResId) {
@@ -615,6 +620,7 @@ public final class SpanEZ {
      *
      * @param start the position of the first character in the range
      * @param end   the position of the last character in the range
+     * @param url   the Url that will be applied to the {@code Char}
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ link(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull String url) {
@@ -626,7 +632,7 @@ public final class SpanEZ {
      * Changes the font family to be used for the {@code String} in {@code targetTexts} that exist in
      * the {@code target} content.
      *
-     * @param fontFamily  the family to be use
+     * @param fontFamily  the font family to be use
      * @param targetTexts all the {@code String} that are to be modified
      * @return the same instance of the object so that chaining is possible
      */
@@ -644,8 +650,9 @@ public final class SpanEZ {
      * Changes the font family to be used for the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start      the position of the first character in the range
+     * @param end        the position of the last character in the range
+     * @param fontFamily the font family to be use
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ font(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull @Font.Family String fontFamily) {
@@ -657,7 +664,7 @@ public final class SpanEZ {
      * Applies the defined style to the {@code String} in {@code targetTexts} that exist in
      * the {@code target} content.
      *
-     * @param appearance  the family to be use
+     * @param appearance  the style resource to be used
      * @param targetTexts all the {@code String} that are to be modified
      * @return the same instance of the object so that chaining is possible
      */
@@ -675,8 +682,9 @@ public final class SpanEZ {
      * Applies the defined style to the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start      the position of the first character in the range
+     * @param end        the position of the last character in the range
+     * @param appearance the style resource to be used
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ style(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @StyleRes int appearance) {
@@ -688,7 +696,7 @@ public final class SpanEZ {
      * Applies a different {@code locale} to the {@code String} in {@code targetTexts} that exist in
      * the {@code target} content.
      *
-     * @param locale      the family to be use
+     * @param locale      the locale to be use
      * @param targetTexts all the {@code String} that are to be modified
      * @return the same instance of the object so that chaining is possible
      */
@@ -706,8 +714,9 @@ public final class SpanEZ {
      * Applies a different {@code locale} to the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start  the position of the first character in the range
+     * @param end    the position of the last character in the range
+     * @param locale the locale to be use
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ locale(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull Locale locale) {
@@ -737,8 +746,9 @@ public final class SpanEZ {
      * Applies a scale factor to the width of the {@code Character} within the given range. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start      the position of the first character in the range
+     * @param end        the position of the last character in the range
+     * @param proportion the factor to be used by the scaling
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ scaleX(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @FloatRange(from = 0.f) float proportion) {
@@ -768,8 +778,9 @@ public final class SpanEZ {
      * {@code Character} within the given range. Or throws and {@code IllegalArgumentException} if
      * the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start      the position of the first character in the range
+     * @param end        the position of the last character in the range
+     * @param proportion the factor to be used by the scaling
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ relativeSize(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @FloatRange(from = 0.f) float proportion) {
@@ -798,8 +809,9 @@ public final class SpanEZ {
      * Changes the size of the {@code Character} within the given range to be exactly {@code pixels}Px.
      * Or throws and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
+     * @param start  the position of the first character in the range
+     * @param end    the position of the last character in the range
+     * @param pixels the size in pixels that will be applied to the {@code String}
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ absoluteSize(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @IntRange(from = 1) int pixels) {
@@ -830,6 +842,7 @@ public final class SpanEZ {
      *
      * @param start the position of the first character in the range
      * @param end   the position of the last character in the range
+     * @param dips  the size in density independent pixels that will be applied to the {@code Char}
      * @return the same instance of the object so that chaining is possible
      */
     public SpanEZ absoluteSizeDP(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @IntRange(from = 1) int dips) {
