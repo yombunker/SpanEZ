@@ -8,7 +8,7 @@ Complete abstraction from the Spannable API. Forget about all the boiler plate c
  * Chain multiple spans with a fluent style
  * By using both the `ContentEZ` and `StyleEZ` interface it removes unnecessary methods from the autocomplete form, and thus it removes clutter.
  * Allows different ways of adding content (String, String Resource and Formatted String)
- * By default it does INCLUSIVE_INCLUSIVE to all the spans
+ * By default it does [INCLUSIVE_INCLUSIVE][2] to all the spans
  * After calling any of the inclusive/exclusive methods, all the next methods will be using that flag until apply is called or another flag is used
  * You can create your own locator by extending the Locator interface
 
@@ -75,3 +75,4 @@ License
     limitations under the License.
 
 [1]: https://developer.android.com/reference/android/text/Spannable.html#setSpan(java.lang.Object, int, int, int)
+[2]: https://developer.android.com/reference/android/text/Spanned.html#SPAN_INCLUSIVE_INCLUSIVE
