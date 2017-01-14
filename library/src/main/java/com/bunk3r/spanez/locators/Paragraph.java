@@ -10,7 +10,8 @@ import java.util.List;
  * Part of SpanEZ
  * Created by joragu on 1/12/2017.
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess",
+                   "unused"})
 public class Paragraph implements Locator {
     private static final int NOT_FOUND = -1;
 
@@ -55,7 +56,11 @@ public class Paragraph implements Locator {
 
     @NonNull
     private List<TargetRange> locateByContent(@NonNull List<P> paragraphs) {
-        List<TargetRange> ranges = new ArrayList<>(1);
+        List<TargetRange> ranges = new ArrayList<>();
+        if (excerpt.isEmpty()) {
+            return ranges;
+        }
+
         for (P paragraph : paragraphs) {
             if (paragraph.content.contains(excerpt)) {
                 ranges.add(TargetRange.from(paragraph.startIndex, paragraph.endIndex));
@@ -90,14 +95,14 @@ public class Paragraph implements Locator {
     }
 
     private static class P {
-        String content;
-        int startIndex;
-        int endIndex;
+        final String content;
+        final int startIndex;
+        final int endIndex;
 
         P(String fullContent, int startIndex, int endIndex) {
             this.content = fullContent.substring(startIndex, endIndex);
             this.startIndex = startIndex;
-            this.endIndex = endIndex;
+            this.endIndex = fullContent.length() != endIndex ? endIndex : endIndex - 1;
         }
     }
 }

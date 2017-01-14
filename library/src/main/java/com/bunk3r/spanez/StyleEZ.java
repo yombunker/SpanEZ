@@ -10,6 +10,7 @@ import android.support.annotation.StyleRes;
 
 import com.bunk3r.spanez.listeners.OnSpanClickListener;
 import com.bunk3r.spanez.locators.Locator;
+import com.bunk3r.spanez.locators.Paragraph;
 
 import java.lang.annotation.Retention;
 import java.util.Locale;
@@ -134,31 +135,31 @@ public interface StyleEZ {
      * Styles the paragraph where all the {@code Character} within the given range exist. Or throws
      * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param locator the locator to be used to decide were to apply this style
+     * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ quote(@NonNull Locator locator);
+    StyleEZ quote(@NonNull Paragraph paragraph);
 
     /**
      * Styles the paragraph (with the selected {@code quoteColorResId}) where all the {@code Character}
      * within the given range exist. Or throws and {@code IllegalArgumentException} if the range
      * provided is outside the content bounds.
      *
-     * @param locator         the locator to be used to decide were to apply this style
+     * @param paragraph       the locator to be used to decide were to apply this style
      * @param quoteColorResId the color to use for the paragraph marker
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ quote(@NonNull Locator locator, @ColorRes int quoteColorResId);
+    StyleEZ quote(@NonNull Paragraph paragraph, @ColorRes int quoteColorResId);
 
     /**
      * Modifies the gravity of the paragraph to be Center align, this is applied to the location of
      * where the {@code Character} within the given range are located. Or throws and
      * {@code IllegalArgumentException} if the range provided is outside the content bounds.
      *
-     * @param locator the locator to be used to decide were to apply this style
+     * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignCenter(@NonNull Locator locator);
+    StyleEZ alignCenter(@NonNull Paragraph paragraph);
 
     /**
      * Modifies the gravity of the paragraph to be Right align for LTR locales, and to be Left align
@@ -166,10 +167,10 @@ public interface StyleEZ {
      * given range are located. Or throws and {@code IllegalArgumentException} if the range provided
      * is outside the content bounds.
      *
-     * @param locator the locator to be used to decide were to apply this style
+     * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignEnd(@NonNull Locator locator);
+    StyleEZ alignEnd(@NonNull Paragraph paragraph);
 
     /**
      * Modifies the gravity of the paragraph to be Left align for LTR locales, and to be Right align
@@ -177,10 +178,10 @@ public interface StyleEZ {
      * given range are located. Or throws and {@code IllegalArgumentException} if the range provided
      * is outside the content bounds.
      *
-     * @param locator the locator to be used to decide were to apply this style
+     * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignStart(@NonNull Locator locator);
+    StyleEZ alignStart(@NonNull Paragraph paragraph);
 
     /**
      * Applies a {@code Link} style to all the {@code Character} within the given range. Or throws

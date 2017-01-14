@@ -56,7 +56,7 @@ public class WordTest {
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
         assertTrue("The range for this word was incorrect", expectedResult.equals(result));
 
-        assertTrue("The range should't be outside the content", endIndex <= fullContent.length());
+        assertTrue("The range should't be outside the content", endIndex < fullContent.length());
     }
 
     @Test

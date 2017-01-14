@@ -16,8 +16,8 @@ public class ClickableSpanEZ extends ClickableSpan {
         return new ClickableSpanEZ(onSpanClickListener, content);
     }
 
-    private OnSpanClickListener spanClickListener;
-    private String text;
+    private final OnSpanClickListener spanClickListener;
+    private final String text;
 
     private ClickableSpanEZ(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
         spanClickListener = onSpanClickListener;

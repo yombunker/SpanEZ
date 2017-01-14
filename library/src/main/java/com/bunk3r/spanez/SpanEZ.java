@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.bunk3r.spanez.listeners.OnSpanClickListener;
 import com.bunk3r.spanez.locators.Locator;
+import com.bunk3r.spanez.locators.Paragraph;
 import com.bunk3r.spanez.locators.TargetRange;
 import com.bunk3r.spanez.spans.ClickableSpanEZ;
 
@@ -59,11 +60,12 @@ public class SpanEZ implements ContentEZ, StyleEZ {
         return new SpanEZ(target);
     }
 
-    private TextView target;
+    private final TextView target;
+    private final Context context;
+    private final Resources resources;
+
     private String content;
     private SpannableString spannableContent;
-    private Context context;
-    private Resources resources;
     private int spanFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
     private SpanEZ(@NonNull TextView targetView) {
@@ -251,12 +253,12 @@ public class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ quote(@NonNull Locator locator) {
-        return quote(locator, RESOURCE_NOT_SET);
+    public StyleEZ quote(@NonNull Paragraph paragraph) {
+        return quote(paragraph, RESOURCE_NOT_SET);
     }
 
     @Override
-    public StyleEZ quote(@NonNull Locator locator, @ColorRes int quoteColorResId) {
+    public StyleEZ quote(@NonNull Paragraph paragraph, @ColorRes int quoteColorResId) {
         final QuoteSpan quoteSpan;
         if (quoteColorResId == RESOURCE_NOT_SET) {
             quoteSpan = new QuoteSpan();
@@ -265,7 +267,7 @@ public class SpanEZ implements ContentEZ, StyleEZ {
             quoteSpan = new QuoteSpan(quoteColor);
         }
 
-        for (TargetRange targetRange : locator.locate(content)) {
+        for (TargetRange targetRange : paragraph.locate(content)) {
             addSpan(targetRange, quoteSpan);
         }
 
@@ -273,8 +275,8 @@ public class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ alignCenter(@NonNull Locator locator) {
-        for (TargetRange targetRange : locator.locate(content)) {
+    public StyleEZ alignCenter(@NonNull Paragraph paragraph) {
+        for (TargetRange targetRange : paragraph.locate(content)) {
             AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
             addSpan(targetRange, centerSpan);
         }
@@ -283,8 +285,8 @@ public class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ alignEnd(@NonNull Locator locator) {
-        for (TargetRange targetRange : locator.locate(content)) {
+    public StyleEZ alignEnd(@NonNull Paragraph paragraph) {
+        for (TargetRange targetRange : paragraph.locate(content)) {
             AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
             addSpan(targetRange, oppositeSpan);
         }
@@ -293,8 +295,8 @@ public class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ alignStart(@NonNull Locator locator) {
-        for (TargetRange targetRange : locator.locate(content)) {
+    public StyleEZ alignStart(@NonNull Paragraph paragraph) {
+        for (TargetRange targetRange : paragraph.locate(content)) {
             AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
             addSpan(targetRange, oppositeSpan);
         }
@@ -399,7 +401,7 @@ public class SpanEZ implements ContentEZ, StyleEZ {
         // Added 1 to the span, because it seems that internally it does exclusive range
         spannableContent.setSpan(span, start, end + 1, spanFlags);
     }
-    
+
 
     private boolean isFlagSet(@STYLE int flag, int flagToVerify) {
         return (flag & flagToVerify) == flagToVerify;
