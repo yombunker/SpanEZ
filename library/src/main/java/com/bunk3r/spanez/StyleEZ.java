@@ -7,6 +7,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
+import android.support.annotation.UiThread;
 
 import com.bunk3r.spanez.listeners.OnSpanClickListener;
 import com.bunk3r.spanez.locators.Locator;
@@ -268,5 +269,6 @@ public interface StyleEZ {
     /**
      * Applies all the previous modifications to the {@code target}
      */
+    @UiThread
     void apply();
 }

@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "2.0.0"
     }
 
     buildTypes {
@@ -31,7 +31,7 @@ publish {
     userOrg = 'yombunker'
     groupId = 'com.bunk3r'
     artifactId = 'spanez'
-    version = '1.0.1'
+    version = '2.0.0'
     desc = 'Android library that simplifies the use of Spans inside strings'
     website = 'https://github.com/yombunker/SpanEZ'
 }

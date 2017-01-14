@@ -9,6 +9,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
+import android.support.annotation.UiThread;
 import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.text.SpannableString;
@@ -122,31 +123,28 @@ public class SpanEZ implements ContentEZ, StyleEZ {
 
     @Override
     public StyleEZ style(@NonNull Locator locator, @STYLE int styles) {
-        // Iterate trough all the target(s) found and check which flags are set
-        for (TargetRange targetRange : locator.locate(content)) {
-            if (isFlagSet(styles, BOLD)) {
-                bold(targetRange);
-            }
+        if (isFlagSet(styles, BOLD)) {
+            bold(locator);
+        }
 
-            if (isFlagSet(styles, ITALIC)) {
-                italic(targetRange);
-            }
+        if (isFlagSet(styles, ITALIC)) {
+            italic(locator);
+        }
 
-            if (isFlagSet(styles, UNDERLINE)) {
-                underline(targetRange);
-            }
+        if (isFlagSet(styles, UNDERLINE)) {
+            underline(locator);
+        }
 
-            if (isFlagSet(styles, STRIKETHROUGH)) {
-                strikethrough(targetRange);
-            }
+        if (isFlagSet(styles, STRIKETHROUGH)) {
+            strikethrough(locator);
+        }
 
-            if (isFlagSet(styles, SUBSCRIPT)) {
-                subscript(targetRange);
-            }
+        if (isFlagSet(styles, SUBSCRIPT)) {
+            subscript(locator);
+        }
 
-            if (isFlagSet(styles, SUPERSCRIPT)) {
-                superscript(targetRange);
-            }
+        if (isFlagSet(styles, SUPERSCRIPT)) {
+            superscript(locator);
         }
         return this;
     }
@@ -155,33 +153,33 @@ public class SpanEZ implements ContentEZ, StyleEZ {
      * Applies a {@code Bold} style to all the {@code Character} within the given range. Or throws
      * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void bold(@NonNull TargetRange targetRange) {
+    private void bold(@NonNull Locator locator) {
         StyleSpan bold = new StyleSpan(Typeface.BOLD);
-        addSpan(targetRange, bold);
+        addMultipleSpan(locator, bold);
     }
 
     /**
      * Applies an {@code Italic} style to all the {@code Character} within the given range. Or throws
      * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void italic(@NonNull TargetRange targetRange) {
+    private void italic(@NonNull Locator locator) {
         StyleSpan italic = new StyleSpan(Typeface.ITALIC);
-        addSpan(targetRange, italic);
+        addMultipleSpan(locator, italic);
     }
 
     /**
      * Applies a {@code Underline} style to all the {@code Character} within the given range. Or throws
      * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void underline(@NonNull TargetRange targetRange) {
+    private void underline(@NonNull Locator locator) {
         UnderlineSpan underline = new UnderlineSpan();
-        addSpan(targetRange, underline);
+        addMultipleSpan(locator, underline);
     }
 
     /**
@@ -189,54 +187,33 @@ public class SpanEZ implements ContentEZ, StyleEZ {
      * to all the {@code Character} within the given range. Or throws and {@code IndexOutOfBoundsException}
      * if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void strikethrough(@NonNull TargetRange targetRange) {
+    private void strikethrough(@NonNull Locator locator) {
         StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
-        addSpan(targetRange, strikethroughSpan);
+        addMultipleSpan(locator, strikethroughSpan);
     }
 
     /**
      * Applies a {@code Subscript} style to all the {@code Character} within the given range. Or throws
      * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void subscript(@NonNull TargetRange targetRange) {
+    private void subscript(@NonNull Locator locator) {
         SubscriptSpan subscriptSpan = new SubscriptSpan();
-        addSpan(targetRange, subscriptSpan);
+        addMultipleSpan(locator, subscriptSpan);
     }
 
     /**
      * Applies a {@code Superscript} style to all the {@code Character} within the given range. Or throws
      * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param targetRange range were the span will be applied to
+     * @param locator range were the span will be applied to
      */
-    private void superscript(@NonNull TargetRange targetRange) {
+    private void superscript(@NonNull Locator locator) {
         SuperscriptSpan superscriptSpan = new SuperscriptSpan();
-        addSpan(targetRange, superscriptSpan);
-    }
-
-    @Override
-    public StyleEZ foregroundColor(@NonNull Locator locator, @ColorRes int fgColorResId) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            final int fgColor = ContextCompat.getColor(context, fgColorResId);
-            ForegroundColorSpan fgColorSpan = new ForegroundColorSpan(fgColor);
-            addSpan(targetRange, fgColorSpan);
-        }
-        return this;
-    }
-
-    @Override
-    public StyleEZ backgroundColor(@NonNull Locator locator, @ColorRes int bgColorResId) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            final int bgColor = ContextCompat.getColor(context, bgColorResId);
-            BackgroundColorSpan bgColorSpan = new BackgroundColorSpan(bgColor);
-            addSpan(targetRange, bgColorSpan);
-        }
-
-        return this;
+        addMultipleSpan(locator, superscriptSpan);
     }
 
     @Override
@@ -248,7 +225,22 @@ public class SpanEZ implements ContentEZ, StyleEZ {
             target.setMovementMethod(new LinkMovementMethod());
             addSpan(targetRange, clickSpan);
         }
+        return this;
+    }
 
+    @Override
+    public StyleEZ foregroundColor(@NonNull Locator locator, @ColorRes int fgColorResId) {
+        final int fgColor = ContextCompat.getColor(context, fgColorResId);
+        ForegroundColorSpan fgColorSpan = new ForegroundColorSpan(fgColor);
+        addMultipleSpan(locator, fgColorSpan);
+        return this;
+    }
+
+    @Override
+    public StyleEZ backgroundColor(@NonNull Locator locator, @ColorRes int bgColorResId) {
+        final int bgColor = ContextCompat.getColor(context, bgColorResId);
+        BackgroundColorSpan bgColorSpan = new BackgroundColorSpan(bgColor);
+        addMultipleSpan(locator, bgColorSpan);
         return this;
     }
 
@@ -267,130 +259,107 @@ public class SpanEZ implements ContentEZ, StyleEZ {
             quoteSpan = new QuoteSpan(quoteColor);
         }
 
-        for (TargetRange targetRange : paragraph.locate(content)) {
-            addSpan(targetRange, quoteSpan);
-        }
-
+        addMultipleSpan(paragraph, quoteSpan);
         return this;
     }
 
     @Override
     public StyleEZ alignCenter(@NonNull Paragraph paragraph) {
-        for (TargetRange targetRange : paragraph.locate(content)) {
-            AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
-            addSpan(targetRange, centerSpan);
-        }
-
+        AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
+        addMultipleSpan(paragraph, centerSpan);
         return this;
     }
 
     @Override
     public StyleEZ alignEnd(@NonNull Paragraph paragraph) {
-        for (TargetRange targetRange : paragraph.locate(content)) {
-            AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
-            addSpan(targetRange, oppositeSpan);
-        }
-
+        AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
+        addMultipleSpan(paragraph, oppositeSpan);
         return this;
     }
 
     @Override
     public StyleEZ alignStart(@NonNull Paragraph paragraph) {
-        for (TargetRange targetRange : paragraph.locate(content)) {
-            AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
-            addSpan(targetRange, oppositeSpan);
-        }
-
+        AlignmentSpan normalSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
+        addMultipleSpan(paragraph, normalSpan);
         return this;
     }
 
     @Override
     public StyleEZ link(@NonNull Locator locator, @NonNull String url) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            URLSpan urlSpan = new URLSpan(url);
-            addSpan(targetRange, urlSpan);
-        }
-
+        URLSpan urlSpan = new URLSpan(url);
+        addMultipleSpan(locator, urlSpan);
         return this;
     }
 
     @Override
     public StyleEZ font(@NonNull Locator locator, @NonNull @FontFamily String fontFamily) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            TypefaceSpan urlSpan = new TypefaceSpan(fontFamily);
-            addSpan(targetRange, urlSpan);
-        }
-
+        TypefaceSpan typefaceSpan = new TypefaceSpan(fontFamily);
+        addMultipleSpan(locator, typefaceSpan);
         return this;
     }
 
     @Override
     public StyleEZ appearance(@NonNull Locator locator, @StyleRes int appearance) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(context, appearance);
-            addSpan(targetRange, textAppearanceSpan);
-        }
-
+        TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(context, appearance);
+        addMultipleSpan(locator, textAppearanceSpan);
         return this;
     }
 
     @Override
     public StyleEZ locale(@NonNull Locator locator, @NonNull Locale locale) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            LocaleSpan localeSpan = new LocaleSpan(locale);
-            addSpan(targetRange, localeSpan);
-        }
-
+        LocaleSpan localeSpan = new LocaleSpan(locale);
+        addMultipleSpan(locator, localeSpan);
         return this;
     }
 
     @Override
     public StyleEZ scaleX(@NonNull Locator locator, @FloatRange(from = 0.f) float proportion) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            ScaleXSpan scaleXSpan = new ScaleXSpan(proportion);
-            addSpan(targetRange, scaleXSpan);
-        }
-
+        ScaleXSpan scaleXSpan = new ScaleXSpan(proportion);
+        addMultipleSpan(locator, scaleXSpan);
         return this;
     }
 
     @Override
     public StyleEZ relativeSize(@NonNull Locator locator, @FloatRange(from = 0.f) float proportion) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(proportion);
-            addSpan(targetRange, relativeSizeSpan);
-        }
-
+        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(proportion);
+        addMultipleSpan(locator, relativeSizeSpan);
         return this;
     }
 
     @Override
     public StyleEZ absoluteSize(@NonNull Locator locator, @IntRange(from = 1) int pixels) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(pixels);
-            addSpan(targetRange, absoluteSizeSpan);
-        }
-
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(pixels);
+        addMultipleSpan(locator, absoluteSizeSpan);
         return this;
     }
 
     @Override
     public StyleEZ absoluteSizeDP(@NonNull Locator locator, @IntRange(from = 1) int dips) {
-        for (TargetRange targetRange : locator.locate(content)) {
-            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(dips, true);
-            addSpan(targetRange, absoluteSizeSpan);
-        }
-
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(dips, true);
+        addMultipleSpan(locator, absoluteSizeSpan);
         return this;
     }
 
     @Override
+    @UiThread
     public void apply() {
         target.setText(spannableContent);
     }
 
     /**
-     * Applies the given {@code span} to the specified range from {@code start} to {@code end}
+     * Applies the given {@code span} to the specified ranges
+     *
+     * @param locator the locator to be used to decide were to apply this span
+     * @param span    the span to be applied
+     */
+    private void addMultipleSpan(@NonNull Locator locator, @NonNull Object span) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            addSpan(targetRange, span);
+        }
+    }
+
+    /**
+     * Applies the given {@code span} to the specified range from
      *
      * @param targetRange the range were the span will be applied to
      * @param span        the span to be applied
