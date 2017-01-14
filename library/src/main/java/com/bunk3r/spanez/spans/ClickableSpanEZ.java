@@ -1,19 +1,25 @@
-package com.bunk3r.spanez;
+package com.bunk3r.spanez.spans;
 
 import android.support.annotation.NonNull;
 import android.text.style.ClickableSpan;
 import android.view.View;
+
+import com.bunk3r.spanez.listeners.OnSpanClickListener;
 
 /**
  * Part of SpanEZ
  * Created by joragu on 1/1/2017.
  */
 
-class ClickableSpanEZ extends ClickableSpan {
+public class ClickableSpanEZ extends ClickableSpan {
+    public static ClickableSpan from(OnSpanClickListener onSpanClickListener, @NonNull String content) {
+        return new ClickableSpanEZ(onSpanClickListener, content);
+    }
+
     private OnSpanClickListener spanClickListener;
     private String text;
 
-    ClickableSpanEZ(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
+    private ClickableSpanEZ(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
         spanClickListener = onSpanClickListener;
         text = content;
     }

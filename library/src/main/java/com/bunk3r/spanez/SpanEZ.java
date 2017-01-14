@@ -33,15 +33,19 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.widget.TextView;
 
+import com.bunk3r.spanez.listeners.OnSpanClickListener;
+import com.bunk3r.spanez.locators.Locator;
+import com.bunk3r.spanez.locators.TargetRange;
+import com.bunk3r.spanez.spans.ClickableSpanEZ;
+
 import java.util.Locale;
 
 /**
  * Part of SpanEZ
- * Created by joragu on 1/1/2017.
+ * Created by joragu on 1/12/2017.
  */
-@SuppressWarnings(value = {"unused",
-                           "WeakerAccess"})
-public final class SpanEZ {
+
+public class SpanEZ implements ContentEZ, StyleEZ {
     private static final int RESOURCE_NOT_SET = -1;
 
     /**
@@ -51,7 +55,7 @@ public final class SpanEZ {
      * @param target The View were the string is located
      * @return an SpanEZ instance were you can apply all the different span styles
      */
-    public static SpanEZ from(TextView target) {
+    public static ContentEZ from(TextView target) {
         return new SpanEZ(target);
     }
 
@@ -70,101 +74,76 @@ public final class SpanEZ {
         spannableContent = new SpannableString(content);
     }
 
-    /**
-     * If you want to set the starting content of the {@code target} from a {@code String}
-     *
-     * @param text the text that will be set as the content of the (@code target)
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ withContent(String text) {
+
+    @Override
+    public StyleEZ withContent(String text) {
         content = text;
         spannableContent = new SpannableString(content);
         return this;
     }
 
-    /**
-     * If you want to set the starting content of the {@code target} from a String resource id
-     *
-     * @param textResId the {@code R.string.*} id of the string that will be used
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ withContent(@StringRes int textResId) {
+    @Override
+    public StyleEZ withContent(@StringRes int textResId) {
         String text = resources.getString(textResId);
         return withContent(text);
     }
 
-    /**
-     * If you want to set the starting content of the {@code target} from a String resource id, that
-     * has format, and you need to pass down the arguments for that format
-     *
-     * @param textResId the {@code R.string.*} id of the string that will be used
-     * @param args      the arguments that will be pass to the format of the {@code String}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ withFormattedContent(@StringRes int textResId, @NonNull Object... args) {
+    @Override
+    public StyleEZ withFormattedContent(@StringRes int textResId, @NonNull Object... args) {
         String text = resources.getString(textResId, args);
         return withContent(text);
     }
 
-    /**
-     * Every call after this will set the {@code Span} to be {@code Inclusive} in both sides, this
-     * means that if text is added within that range the new text will keep the same format.
-     *
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ inclusive() {
+    @Override
+    public StyleEZ inclusive() {
         spanFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
         return this;
     }
 
-    /**
-     * Every call after this will set the {@code Span} to be {@code Exclusive} in both sides, this
-     * means that if text is added within that range, excluding the last character the new
-     * text will keep the same format.
-     *
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ inclusiveExclusive() {
+    @Override
+    public StyleEZ inclusiveExclusive() {
         spanFlags = Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
         return this;
     }
 
-    /**
-     * Every call after this will set the {@code Span} to be {@code Exclusive} in both sides, this
-     * means that if text is added within that range, excluding the first character the new
-     * text will keep the same format.
-     *
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ exclusiveInclusive() {
+    @Override
+    public StyleEZ exclusiveInclusive() {
         spanFlags = Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
         return this;
     }
 
-    /**
-     * Every call after this will set the {@code Span} to be {@code Exclusive} in both sides, this
-     * means that if text is added within that range, excluding the first and last character the new
-     * text will keep the same format.
-     *
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ exclusive() {
+    @Override
+    public StyleEZ exclusive() {
         spanFlags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
         return this;
     }
 
-    /**
-     * Applies a {@code Bold} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ bold(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                bold(position, position + text.length());
+    @Override
+    public StyleEZ style(@NonNull Locator locator, @STYLE int styles) {
+        // Iterate trough all the target(s) found and check which flags are set
+        for (TargetRange targetRange : locator.locate(content)) {
+            if (isFlagSet(styles, BOLD)) {
+                bold(targetRange);
+            }
+
+            if (isFlagSet(styles, ITALIC)) {
+                italic(targetRange);
+            }
+
+            if (isFlagSet(styles, UNDERLINE)) {
+                underline(targetRange);
+            }
+
+            if (isFlagSet(styles, STRIKETHROUGH)) {
+                strikethrough(targetRange);
+            }
+
+            if (isFlagSet(styles, SUBSCRIPT)) {
+                subscript(targetRange);
+            }
+
+            if (isFlagSet(styles, SUPERSCRIPT)) {
+                superscript(targetRange);
             }
         }
         return this;
@@ -172,724 +151,258 @@ public final class SpanEZ {
 
     /**
      * Applies a {@code Bold} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
+     * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
+     * @param targetRange range were the span will be applied to
      */
-    public SpanEZ bold(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
+    private void bold(@NonNull TargetRange targetRange) {
         StyleSpan bold = new StyleSpan(Typeface.BOLD);
-        return addSpan(start, end, bold);
-    }
-
-    /**
-     * Applies an {@code Italic} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ italic(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                italic(position, position + text.length());
-            }
-        }
-        return this;
+        addSpan(targetRange, bold);
     }
 
     /**
      * Applies an {@code Italic} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
+     * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
+     * @param targetRange range were the span will be applied to
      */
-    public SpanEZ italic(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
+    private void italic(@NonNull TargetRange targetRange) {
         StyleSpan italic = new StyleSpan(Typeface.ITALIC);
-        return addSpan(start, end, italic);
-    }
-
-    /**
-     * Applies an {@code Underline} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ underline(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                underline(position, position + text.length());
-            }
-        }
-        return this;
+        addSpan(targetRange, italic);
     }
 
     /**
      * Applies a {@code Underline} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
+     * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
      *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
+     * @param targetRange range were the span will be applied to
      */
-    public SpanEZ underline(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
+    private void underline(@NonNull TargetRange targetRange) {
         UnderlineSpan underline = new UnderlineSpan();
-        return addSpan(start, end, underline);
+        addSpan(targetRange, underline);
     }
 
     /**
-     * Changes the {@code ForegroundColor} of the {@code Char} to all the {@code String} in {@code targetTexts}
-     * that exist in the {@code target} content.
+     * Applies an {@code Strikethrough} style (Meaning that it crosses all text with a horizontal line)
+     * to all the {@code Character} within the given range. Or throws and {@code IndexOutOfBoundsException}
+     * if the range provided is outside the content bounds.
      *
-     * @param fgColorResId the color to use for the {@code Char}
-     * @param targetTexts  all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
+     * @param targetRange range were the span will be applied to
      */
-    public SpanEZ foregroundColor(@ColorRes int fgColorResId, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                foregroundColor(position, position + text.length(), fgColorResId);
-            }
+    private void strikethrough(@NonNull TargetRange targetRange) {
+        StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
+        addSpan(targetRange, strikethroughSpan);
+    }
+
+    /**
+     * Applies a {@code Subscript} style to all the {@code Character} within the given range. Or throws
+     * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
+     *
+     * @param targetRange range were the span will be applied to
+     */
+    private void subscript(@NonNull TargetRange targetRange) {
+        SubscriptSpan subscriptSpan = new SubscriptSpan();
+        addSpan(targetRange, subscriptSpan);
+    }
+
+    /**
+     * Applies a {@code Superscript} style to all the {@code Character} within the given range. Or throws
+     * and {@code IndexOutOfBoundsException} if the range provided is outside the content bounds.
+     *
+     * @param targetRange range were the span will be applied to
+     */
+    private void superscript(@NonNull TargetRange targetRange) {
+        SuperscriptSpan superscriptSpan = new SuperscriptSpan();
+        addSpan(targetRange, superscriptSpan);
+    }
+
+    @Override
+    public StyleEZ foregroundColor(@NonNull Locator locator, @ColorRes int fgColorResId) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            final int fgColor = ContextCompat.getColor(context, fgColorResId);
+            ForegroundColorSpan fgColorSpan = new ForegroundColorSpan(fgColor);
+            addSpan(targetRange, fgColorSpan);
         }
         return this;
     }
 
-    /**
-     * Changes the {@code ForegroundColor} of all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start        the position of the first character in the range
-     * @param end          the position of the last character in the range
-     * @param fgColorResId the color to use for the {@code Char}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ foregroundColor(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int fgColorResId) {
-        final int fgColor = ContextCompat.getColor(context, fgColorResId);
-        ForegroundColorSpan fgColorSpan = new ForegroundColorSpan(fgColor);
-        return addSpan(start, end, fgColorSpan);
-    }
-
-    /**
-     * Changes the {@code BackgroundColor} to all the {@code String} in {@code targetTexts}
-     * that exist in the {@code target} content.
-     *
-     * @param bgColorResId the color to use for the {@code BackgroundColor}
-     * @param targetTexts  all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ backgroundColor(@ColorRes int bgColorResId, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                backgroundColor(position, position + text.length(), bgColorResId);
-            }
+    @Override
+    public StyleEZ backgroundColor(@NonNull Locator locator, @ColorRes int bgColorResId) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            final int bgColor = ContextCompat.getColor(context, bgColorResId);
+            BackgroundColorSpan bgColorSpan = new BackgroundColorSpan(bgColor);
+            addSpan(targetRange, bgColorSpan);
         }
+
         return this;
     }
 
-    /**
-     * Changes the {@code BackgroundColor} of all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start        the position of the first character in the range
-     * @param end          the position of the last character in the range
-     * @param bgColorResId the color to use for the {@code BackgroundColor}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ backgroundColor(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int bgColorResId) {
-        final int bgColor = ContextCompat.getColor(context, bgColorResId);
-        BackgroundColorSpan bgColorSpan = new BackgroundColorSpan(bgColor);
-        return addSpan(start, end, bgColorSpan);
-    }
-
-    /**
-     * Adds an {@code OnClickListener} to all the {@code String} in {@code targetTexts}
-     * that exist in the {@code target} content.
-     *
-     * @param spanClick   the callback to call whenever the span it is clicked
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ clickable(@NonNull OnSpanClickListener spanClick, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                clickable(position, position + text.length(), spanClick);
-            }
+    @Override
+    public StyleEZ clickable(@NonNull Locator locator, @NonNull OnSpanClickListener spanClick) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            ClickableSpan clickSpan = ClickableSpanEZ.from(spanClick,
+                                                           content.substring(targetRange.getStart(),
+                                                                             targetRange.getEnd()));
+            target.setMovementMethod(new LinkMovementMethod());
+            addSpan(targetRange, clickSpan);
         }
+
         return this;
     }
 
-    /**
-     * Adds an {@code OnClickListener} to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start     the position of the first character in the range
-     * @param end       the position of the last character in the range
-     * @param spanClick the callback to call whenever the span it is clicked
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ clickable(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull OnSpanClickListener spanClick) {
-        ClickableSpan clickSpan = new ClickableSpanEZ(spanClick, content.substring(start, end));
-        target.setMovementMethod(new LinkMovementMethod());
-        return addSpan(start, end, clickSpan);
+    @Override
+    public StyleEZ quote(@NonNull Locator locator) {
+        return quote(locator, RESOURCE_NOT_SET);
     }
 
-    /**
-     * Styles the paragraph where all the {@code String} in {@code targetTexts} that exist in the
-     * {@code target} content. (Commonly this adds a vertical line to the left of the paragraph, but
-     * is something dependant on the OS)
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ quote(@NonNull String... targetTexts) {
-        return quote(RESOURCE_NOT_SET, targetTexts);
-    }
-
-
-    /**
-     * Styles the paragraph (with the selected {@code quoteColorResId}) where all the {@code String}
-     * in {@code targetTexts} that exist in the {@code target} content.(Commonly this adds a vertical
-     * line to the left of the paragraph, but is something dependant on the OS)
-     *
-     * @param quoteColorResId the color to use for the paragraph marker
-     * @param targetTexts     all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ quote(@ColorRes int quoteColorResId, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                quote(position, position + text.length(), quoteColorResId);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Styles the paragraph where all the {@code Character} within the given range exist. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ quote(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        return quote(start, end, RESOURCE_NOT_SET);
-    }
-
-    /**
-     * Styles the paragraph (with the selected {@code quoteColorResId}) where all the {@code Character} within the given range exist. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start           the position of the first character in the range
-     * @param end             the position of the last character in the range
-     * @param quoteColorResId the color to use for the paragraph marker
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ quote(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @ColorRes int quoteColorResId) {
-        QuoteSpan quoteSpan;
+    @Override
+    public StyleEZ quote(@NonNull Locator locator, @ColorRes int quoteColorResId) {
+        final QuoteSpan quoteSpan;
         if (quoteColorResId == RESOURCE_NOT_SET) {
             quoteSpan = new QuoteSpan();
         } else {
             final int quoteColor = ContextCompat.getColor(context, quoteColorResId);
             quoteSpan = new QuoteSpan(quoteColor);
         }
-        return addSpan(start, end, quoteSpan);
-    }
 
-
-    /**
-     * Applies an {@code Strikethrough} style (Meaning that it crosses all text with a horizontal line)
-     * to all the {@code String} in {@code targetTexts} that exist in the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ strikethrough(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                strikethrough(position, position + text.length());
-            }
+        for (TargetRange targetRange : locator.locate(content)) {
+            addSpan(targetRange, quoteSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies an {@code Strikethrough} style (Meaning that it crosses all text with a horizontal line)
-     * to all the {@code Character} within the given range. Or throws and {@code IllegalArgumentException}
-     * if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ strikethrough(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
-        return addSpan(start, end, strikethroughSpan);
-    }
-
-    /**
-     * Modifies the gravity of the paragraph to be Center align, this is applied to the location of
-     * where the {@code String} in {@code targetTexts} that exist in the {@code target} content are.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignCenter(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                alignCenter(position, position + text.length());
-            }
+    @Override
+    public StyleEZ alignCenter(@NonNull Locator locator) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
+            addSpan(targetRange, centerSpan);
         }
+
         return this;
     }
 
-    /**
-     * Modifies the gravity of the paragraph to be Center align, this is applied to the location of
-     * where the {@code Character} within the given range are located. Or throws and
-     * {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignCenter(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
-        return addSpan(start, end, centerSpan);
-    }
-
-    /**
-     * Modifies the gravity of the paragraph to be Right align for LTR locales, and to be Left align
-     * for RTL locales, this is applied to the location of where the {@code String} in
-     * {@code targetTexts} that exist in the {@code target} content are.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignEnd(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                alignEnd(position, position + text.length());
-            }
+    @Override
+    public StyleEZ alignEnd(@NonNull Locator locator) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
+            addSpan(targetRange, oppositeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Modifies the gravity of the paragraph to be Right align for LTR locales, and to be Left align
-     * for RTL locales, this is applied to the location of where the {@code Character} within the
-     * given range are located. Or throws and {@code IllegalArgumentException} if the range provided
-     * is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignEnd(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
-        return addSpan(start, end, oppositeSpan);
-    }
-
-    /**
-     * Modifies the gravity of the paragraph to be Left align for LTR locales, and to be Right align
-     * for RTL locales, this is applied to the location of where the {@code String} in
-     * {@code targetTexts} that exist in the {@code target} content are.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignStart(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                alignStart(position, position + text.length());
-            }
+    @Override
+    public StyleEZ alignStart(@NonNull Locator locator) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
+            addSpan(targetRange, oppositeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Modifies the gravity of the paragraph to be Left align for LTR locales, and to be Right align
-     * for RTL locales, this is applied to the location of where the {@code Character} within the
-     * given range are located. Or throws and {@code IllegalArgumentException} if the range provided
-     * is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ alignStart(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
-        return addSpan(start, end, oppositeSpan);
-    }
-
-    /**
-     * Applies a {@code Subscript} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ subscript(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                subscript(position, position + text.length());
-            }
+    @Override
+    public StyleEZ link(@NonNull Locator locator, @NonNull String url) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            URLSpan urlSpan = new URLSpan(url);
+            addSpan(targetRange, urlSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies a {@code Subscript} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ subscript(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        SubscriptSpan subscriptSpan = new SubscriptSpan();
-        return addSpan(start, end, subscriptSpan);
-    }
-
-    /**
-     * Applies a {@code Superscript} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ superscript(@NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                superscript(position, position + text.length());
-            }
+    @Override
+    public StyleEZ font(@NonNull Locator locator, @NonNull @FontFamily String fontFamily) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            TypefaceSpan urlSpan = new TypefaceSpan(fontFamily);
+            addSpan(targetRange, urlSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies a {@code Superscript} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ superscript(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
-        SuperscriptSpan superscriptSpan = new SuperscriptSpan();
-        return addSpan(start, end, superscriptSpan);
-    }
-
-    /**
-     * Applies a {@code Link} style to all the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content, If clicked an Intent to open the link will be fired.
-     *
-     * @param url         the Url that will be applied to the {@code String}
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ link(@NonNull String url, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                link(position, position + text.length(), url);
-            }
+    @Override
+    public StyleEZ appearance(@NonNull Locator locator, @StyleRes int appearance) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(context, appearance);
+            addSpan(targetRange, textAppearanceSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies a {@code Link} style to all the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds. If
-     * clicked an Intent to open the link will be fired.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @param url   the Url that will be applied to the {@code Char}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ link(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull String url) {
-        URLSpan urlSpan = new URLSpan(url);
-        return addSpan(start, end, urlSpan);
-    }
-
-    /**
-     * Changes the font family to be used for the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param fontFamily  the font family to be use
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ font(@NonNull @Font.Family String fontFamily, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                font(position, position + text.length(), fontFamily);
-            }
+    @Override
+    public StyleEZ locale(@NonNull Locator locator, @NonNull Locale locale) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            LocaleSpan localeSpan = new LocaleSpan(locale);
+            addSpan(targetRange, localeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Changes the font family to be used for the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start      the position of the first character in the range
-     * @param end        the position of the last character in the range
-     * @param fontFamily the font family to be use
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ font(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull @Font.Family String fontFamily) {
-        TypefaceSpan urlSpan = new TypefaceSpan(fontFamily);
-        return addSpan(start, end, urlSpan);
-    }
-
-    /**
-     * Applies the defined style to the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param appearance  the style resource to be used
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ style(@StyleRes int appearance, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                style(position, position + text.length(), appearance);
-            }
+    @Override
+    public StyleEZ scaleX(@NonNull Locator locator, @FloatRange(from = 0.f) float proportion) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            ScaleXSpan scaleXSpan = new ScaleXSpan(proportion);
+            addSpan(targetRange, scaleXSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies the defined style to the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start      the position of the first character in the range
-     * @param end        the position of the last character in the range
-     * @param appearance the style resource to be used
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ style(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @StyleRes int appearance) {
-        TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(context, appearance);
-        return addSpan(start, end, textAppearanceSpan);
-    }
-
-    /**
-     * Applies a different {@code locale} to the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param locale      the locale to be use
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ locale(@NonNull Locale locale, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                locale(position, position + text.length(), locale);
-            }
+    @Override
+    public StyleEZ relativeSize(@NonNull Locator locator, @FloatRange(from = 0.f) float proportion) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(proportion);
+            addSpan(targetRange, relativeSizeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies a different {@code locale} to the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start  the position of the first character in the range
-     * @param end    the position of the last character in the range
-     * @param locale the locale to be use
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ locale(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @NonNull Locale locale) {
-        LocaleSpan localeSpan = new LocaleSpan(locale);
-        return addSpan(start, end, localeSpan);
-    }
-
-    /**
-     * Applies a scale factor to the width of the {@code String} in {@code targetTexts} that exist in
-     * the {@code target} content.
-     *
-     * @param proportion  the factor to be used by the scaling
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ scaleX(@FloatRange(from = 0.f) float proportion, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                scaleX(position, position + text.length(), proportion);
-            }
+    @Override
+    public StyleEZ absoluteSize(@NonNull Locator locator, @IntRange(from = 1) int pixels) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(pixels);
+            addSpan(targetRange, absoluteSizeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Applies a scale factor to the width of the {@code Character} within the given range. Or throws
-     * and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start      the position of the first character in the range
-     * @param end        the position of the last character in the range
-     * @param proportion the factor to be used by the scaling
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ scaleX(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @FloatRange(from = 0.f) float proportion) {
-        ScaleXSpan scaleXSpan = new ScaleXSpan(proportion);
-        return addSpan(start, end, scaleXSpan);
-    }
-
-    /**
-     * Changes the size of the {@code String} relative to the {@code TextSize} applied to the {@code target}
-     *
-     * @param proportion  the factor to be used by the scaling
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ relativeSize(@FloatRange(from = 0.f) float proportion, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                relativeSize(position, position + text.length(), proportion);
-            }
+    @Override
+    public StyleEZ absoluteSizeDP(@NonNull Locator locator, @IntRange(from = 1) int dips) {
+        for (TargetRange targetRange : locator.locate(content)) {
+            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(dips, true);
+            addSpan(targetRange, absoluteSizeSpan);
         }
+
         return this;
     }
 
-    /**
-     * Changes the size of the {@code String} relative to the {@code TextSize} applied to the
-     * {@code Character} within the given range. Or throws and {@code IllegalArgumentException} if
-     * the range provided is outside the content bounds.
-     *
-     * @param start      the position of the first character in the range
-     * @param end        the position of the last character in the range
-     * @param proportion the factor to be used by the scaling
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ relativeSize(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @FloatRange(from = 0.f) float proportion) {
-        RelativeSizeSpan relativeSizeSpan = new RelativeSizeSpan(proportion);
-        return addSpan(start, end, relativeSizeSpan);
-    }
-
-    /**
-     * Changes the size of the {@code String} to be exactly {@code pixels}Px.
-     *
-     * @param pixels      the size in pixels that will be applied to the {@code String}
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ absoluteSize(@IntRange(from = 1) int pixels, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                absoluteSize(position, position + text.length(), pixels);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Changes the size of the {@code Character} within the given range to be exactly {@code pixels}Px.
-     * Or throws and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start  the position of the first character in the range
-     * @param end    the position of the last character in the range
-     * @param pixels the size in pixels that will be applied to the {@code String}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ absoluteSize(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @IntRange(from = 1) int pixels) {
-        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(pixels);
-        return addSpan(start, end, absoluteSizeSpan);
-    }
-
-    /**
-     * Changes the size of the {@code String} to be exactly {@code dips}DP.
-     *
-     * @param dips        the size in density independent pixels that will be applied to the {@code String}
-     * @param targetTexts all the {@code String} that are to be modified
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ absoluteSizeDP(@IntRange(from = 1) int dips, @NonNull String... targetTexts) {
-        for (String text : targetTexts) {
-            final int position = content.indexOf(text);
-            if (position != -1) {
-                absoluteSize(position, position + text.length(), dips);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Changes the size of the {@code Character} within the given range to be exactly {@code dips}DP.
-     * Or throws and {@code IllegalArgumentException} if the range provided is outside the content bounds.
-     *
-     * @param start the position of the first character in the range
-     * @param end   the position of the last character in the range
-     * @param dips  the size in density independent pixels that will be applied to the {@code Char}
-     * @return the same instance of the object so that chaining is possible
-     */
-    public SpanEZ absoluteSizeDP(@IntRange(from = 0) int start, @IntRange(from = 0) int end, @IntRange(from = 1) int dips) {
-        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(dips, true);
-        return addSpan(start, end, absoluteSizeSpan);
+    @Override
+    public void apply() {
+        target.setText(spannableContent);
     }
 
     /**
      * Applies the given {@code span} to the specified range from {@code start} to {@code end}
      *
-     * @param start starting position
-     * @param end   ending position
-     * @param span  the span to be applied
-     * @return the same instance of the object so that chaining is possible
+     * @param targetRange the range were the span will be applied to
+     * @param span        the span to be applied
      */
-    private SpanEZ addSpan(@IntRange(from = 0) int start, int end, @NonNull Object span) {
-        validateRange(start, end);
-        spannableContent.setSpan(span, start, end, spanFlags);
-        return this;
+    private void addSpan(@NonNull TargetRange targetRange, @NonNull Object span) {
+        final int start = targetRange.getStart();
+        final int end = targetRange.getEnd();
+        // Added 1 to the span, because it seems that internally it does exclusive range
+        spannableContent.setSpan(span, start, end + 1, spanFlags);
     }
+    
 
-    /**
-     * Validates that a starting and ending position are valid within the content of the {@code target}
-     *
-     * @param start starting position
-     * @param end   ending position
-     */
-    private void validateRange(int start, int end) {
-        if (start < 0) {
-            throw new IllegalArgumentException("The start of the Span can't be less than 0");
-        } else if (start > spannableContent.length()) {
-            throw new IllegalArgumentException(
-                    "The start of the Span can't be after the end of the content");
-        } else if (end < start) {
-            throw new IllegalArgumentException(
-                    "The end of the Span can't be before the start of the Span");
-        } else if (end > spannableContent.length()) {
-            throw new IllegalArgumentException(
-                    "The end of the Span can't be after the end of the content");
-        }
-    }
-
-    /**
-     * Applies all the previous modifications to the {@code target}
-     */
-    public void apply() {
-        target.setText(spannableContent);
+    private boolean isFlagSet(@STYLE int flag, int flagToVerify) {
+        return (flag & flagToVerify) == flagToVerify;
     }
 
 }

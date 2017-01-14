@@ -4,8 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.bunk3r.spanez.Font;
 import com.bunk3r.spanez.SpanEZ;
+import com.bunk3r.spanez.locators.Paragraph;
+import com.bunk3r.spanez.locators.Range;
+import com.bunk3r.spanez.locators.Word;
+
+import static com.bunk3r.spanez.SpanEZ.BOLD;
+import static com.bunk3r.spanez.SpanEZ.ITALIC;
+import static com.bunk3r.spanez.SpanEZ.STRIKETHROUGH;
+import static com.bunk3r.spanez.SpanEZ.SUBSCRIPT;
+import static com.bunk3r.spanez.SpanEZ.SUPERSCRIPT;
+import static com.bunk3r.spanez.SpanEZ.UNDERLINE;
 
 public class MainActivity extends AppCompatActivity {
     private TextView sample;
@@ -24,23 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         SpanEZ.from(sample)
               .withContent(R.string.lorem_ipsum)
-              .inclusive()
-              .exclusive()
-              .inclusiveExclusive()
-              .exclusiveInclusive()
-              .bold(0, 10)
-              .italic(11, 20)
-              .underline(21, 30)
-              .foregroundColor(31, 40, R.color.colorPrimary)
-              .backgroundColor(41, 50, R.color.colorAccent)
-              .subscript(0, 10)
-              .superscript(20, 40)
-              .scaleX(50, 80, 2.f)
-              .relativeSize(100, 120, 3f)
-              .absoluteSize(130, 150, 20)
-              .absoluteSizeDP(130, 150, 20)
-              .font(Font.MONOSPACE, "ut ultricies dolor molestie eget")
-              .font(Font.SANS_SERIF_CONDENSED, "Sed accumsan sapien nec nisi mattis pulvinar.")
+              .backgroundColor(Word.findFirst("ipsum dolor"), R.color.colorAccent)
+              .backgroundColor(Range.from(1, 4), R.color.colorPrimaryDark)
               .apply();
     }
 }
