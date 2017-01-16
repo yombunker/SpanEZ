@@ -1,5 +1,7 @@
 SpanEZ
 ============
+
+[![Build status](https://travis-ci.org/yombunker/SpanEZ.svg?branch=master)](https://travis-ci.org/yombunker/SpanEZ)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 
 Complete abstraction from the Spannable API. Forget about all the boiler plate code and all the
