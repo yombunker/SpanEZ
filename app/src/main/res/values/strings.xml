@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SpanEZ</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tincidunt est id eros pharetra eleifend. Vivamus porttitor accumsan quam, et mattis tortor fermentum quis. Quisque ut ipsum tellus. Quisque suscipit diam ut augue egestas, vel tempus nisi euismod. Curabitur accumsan molestie nisl, ut ultricies dolor molestie eget. Aliquam scelerisque, elit sit amet faucibus tincidunt, tortor purus interdum sapien, eu suscipit lorem dolor mattis libero. Morbi ut urna tempor, auctor lorem vitae, bibendum nibh. Nullam ut massa id arcu efficitur cursus. Mauris in lacus at nulla consectetur dapibus. Sed accumsan sapien nec nisi mattis pulvinar.</string>
 </resources>

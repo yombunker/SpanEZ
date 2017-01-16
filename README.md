@@ -1,5 +1,6 @@
 SpanEZ
 ============
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 
 Complete abstraction from the Spannable API. Forget about all the boiler plate code and all the
 [**Object what**][1] nonsense that you have to deal with when working with Spannable.
