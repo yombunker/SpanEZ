@@ -58,7 +58,7 @@ Download
 
 ```groovy
 dependencies {
-  compile 'com.bunk3r:spanez:2.0.0'
+  compile 'com.bunk3r:spanez:2.x.x'
 }
 ```
 
