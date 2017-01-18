@@ -76,4 +76,15 @@ public class TargetRangeTest {
         assertFalse("The two objects should be different", expectedResult.equals(targetRange));
     }
 
+    @Test
+    public void getters_are_just_for_read_only() {
+        final int rangeStart = 1;
+        final int rangeEnd = 5;
+
+        TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
+
+        assertTrue("The start range has changed", targetRange.getStart() == rangeStart);
+        assertTrue("The end range has changed", targetRange.getEnd() == rangeEnd);
+    }
+
 }

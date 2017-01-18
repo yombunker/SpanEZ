@@ -3,11 +3,11 @@ SpanEZ
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 [![Build status](https://travis-ci.org/yombunker/SpanEZ.svg?branch=master)](https://travis-ci.org/yombunker/SpanEZ)
-[![codecov.io](https://codecov.io/github/yombunker/spanez/branch/master/graph/badge.svg)](https://codecov.io/gh/yombunker/SpanEZ)
-[ ![Download](https://api.bintray.com/packages/yombunker/maven/spanez/images/download.svg) ](https://bintray.com/yombunker/maven/spanez/_latestVersion)
+[![codecov](https://codecov.io/gh/yombunker/SpanEZ/branch/master/graph/badge.svg)](https://codecov.io/gh/yombunker/SpanEZ)
+[![Download](https://api.bintray.com/packages/yombunker/maven/spanez/images/download.svg) ](https://bintray.com/yombunker/maven/spanez/_latestVersion)
 
 Complete abstraction from the Spannable API. Forget about all the boiler plate code and all the
-[**Object what**][1] nonsense that you have to deal with when working with Spannable.
+[Object what][1] nonsense that you have to deal with when working with Spannable.
 
  * Eliminate `setSpan` calls by using all the provided methods trough the `StyleEZ` interface.
  * Chain multiple spans with a fluent style
@@ -78,6 +78,7 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
 
 [1]: https://developer.android.com/reference/android/text/Spannable.html#setSpan(java.lang.Object, int, int, int)
 [2]: https://developer.android.com/reference/android/text/Spanned.html#SPAN_INCLUSIVE_INCLUSIVE

@@ -73,10 +73,20 @@ public class SpanEZ implements ContentEZ, StyleEZ {
         target = targetView;
         context = target.getContext();
         resources = target.getResources();
-        content = target.getText().toString();
-        spannableContent = new SpannableString(content);
     }
 
+    @Override
+    public StyleEZ withCurrentContent() {
+        CharSequence currentText = target.getText();
+        if (currentText instanceof SpannableString) {
+            spannableContent = (SpannableString) currentText;
+            content = spannableContent.toString();
+        } else {
+            content = currentText.toString();
+            spannableContent = new SpannableString(content);
+        }
+        return this;
+    }
 
     @Override
     public StyleEZ withContent(String text) {

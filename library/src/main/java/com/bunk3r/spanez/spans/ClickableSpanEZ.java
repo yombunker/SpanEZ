@@ -12,7 +12,8 @@ import com.bunk3r.spanez.listeners.OnSpanClickListener;
  */
 
 public class ClickableSpanEZ extends ClickableSpan {
-    public static ClickableSpan from(OnSpanClickListener onSpanClickListener, @NonNull String content) {
+    @NonNull
+    public static ClickableSpan from(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
         return new ClickableSpanEZ(onSpanClickListener, content);
     }
 

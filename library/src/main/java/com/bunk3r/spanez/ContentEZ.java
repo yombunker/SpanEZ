@@ -12,6 +12,15 @@ import android.support.annotation.StringRes;
                    "unused"})
 public interface ContentEZ {
     /**
+     * If you want to keep the content of the {@code target}
+     * NOTE: Currently it only works if the content is a SpannableString, otherwise it will be taken
+     * as a normal String.
+     *
+     * @return the same instance of the object so that chaining is possible
+     */
+    StyleEZ withCurrentContent();
+
+    /**
      * If you want to set the starting content of the {@code target} from a {@code String}
      *
      * @param text the text that will be set as the content of the (@code target)
