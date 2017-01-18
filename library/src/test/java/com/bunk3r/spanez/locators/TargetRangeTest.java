@@ -65,15 +65,62 @@ public class TargetRangeTest {
         assertTrue("The two objects should be equal", expectedResult.equals(targetRange));
     }
 
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    @Test
+    public void target_range_compare_same_instance() {
+        final int rangeStart = 1;
+        final int rangeEnd = 5;
+
+        TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
+        TargetRange expectedResult = targetRange;
+
+        assertTrue("The two objects should be equal", expectedResult.equals(targetRange));
+    }
+
     @Test
     public void target_range_must_not_be_equal() {
         final int rangeStart = 1;
         final int rangeEnd = 5;
 
         TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
-        TargetRange expectedResult = TargetRange.from(rangeStart, rangeStart);
+        TargetRange notExpectedResult = TargetRange.from(0, 0);
 
-        assertFalse("The two objects should be different", expectedResult.equals(targetRange));
+        assertFalse("The two objects should be different", notExpectedResult.equals(targetRange));
+    }
+
+    @Test
+    public void target_range_start_must_not_be_equal() {
+        final int rangeStart = 1;
+        final int rangeEnd = 5;
+
+        TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
+        TargetRange notExpectedResult = TargetRange.from(rangeEnd, rangeEnd);
+
+        assertFalse("The two objects should be different", notExpectedResult.equals(targetRange));
+    }
+
+//    @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+    @Test
+    public void target_range_must_not_be_equal_they_are_different_types() {
+        final int rangeStart = 1;
+        final int rangeEnd = 5;
+
+        TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
+        Object notExpectedResult = new Object();
+
+        assertFalse("The two objects should be different", notExpectedResult.equals(targetRange));
+    }
+
+    @Test
+    public void target_range_end_must_not_be_equal() {
+        final int rangeStart = 1;
+        final int rangeEnd = 5;
+
+        TargetRange targetRange = TargetRange.from(rangeStart, rangeEnd);
+        TargetRange notExpectedResult = TargetRange.from(rangeStart, rangeStart);
+
+        assertFalse("The two objects should be different", notExpectedResult.equals(targetRange));
     }
 
     @Test
