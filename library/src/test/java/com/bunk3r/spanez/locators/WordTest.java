@@ -19,57 +19,47 @@ public class WordTest {
     private static final String UNIQUE_CONTENT = FIRST_WORD + MIDDLE_WORD + LAST_WORD;
     private static final String REPEATED_CONTENT = FIRST_WORD + MIDDLE_WORD + MIDDLE_WORD + MIDDLE_WORD + LAST_WORD;
 
+    private static final TargetRange FIRST_WORD_RANGE = TargetRange.from(0, 4);
+    private static final TargetRange MIDDLE_WORD_RANGE = TargetRange.from(5, 10);
+    private static final TargetRange LAST_WORD_RANGE = TargetRange.from(11, 13);
+    private static final TargetRange REPEATED_MIDDLE_WORD_RANGE_1 = TargetRange.from(5, 10);
+    private static final TargetRange REPEATED_MIDDLE_WORD_RANGE_2 = TargetRange.from(11, 16);
+    private static final TargetRange REPEATED_MIDDLE_WORD_RANGE_3 = TargetRange.from(17, 22);
+
     @Test
     public void find_first_occurrence_when_only_one_exist_at_start() {
         Word wordLocator = Word.findFirst(FIRST_WORD);
         List<TargetRange> results = wordLocator.locate(UNIQUE_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        int startIndex = 0;
-        int endIndex = startIndex + FIRST_WORD.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(FIRST_WORD_RANGE);
     }
 
     @Test
     public void find_first_occurrence_when_only_one_exist_at_center() {
         Word wordLocator = Word.findFirst(MIDDLE_WORD);
         List<TargetRange> results = wordLocator.locate(UNIQUE_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        int startIndex = 5;
-        int endIndex = startIndex + MIDDLE_WORD.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(MIDDLE_WORD_RANGE);
     }
 
     @Test
     public void find_first_occurrence_when_only_one_exist_at_end() {
         Word wordLocator = Word.findFirst(LAST_WORD);
         List<TargetRange> results = wordLocator.locate(UNIQUE_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        int startIndex = 11;
-        int endIndex = startIndex + LAST_WORD.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
-        assertThat(endIndex).isLessThan(UNIQUE_CONTENT.length());
+        assertThat(results).hasSize(1)
+                           .containsOnly(LAST_WORD_RANGE);
     }
 
     @Test
     public void find_first_occurrence_when_multiple_exist() {
         Word wordLocator = Word.findFirst(MIDDLE_WORD);
         List<TargetRange> results = wordLocator.locate(REPEATED_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        int startIndex = 5;
-        int endIndex = startIndex + MIDDLE_WORD.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(REPEATED_MIDDLE_WORD_RANGE_1);
     }
 
     @Test
@@ -87,18 +77,32 @@ public class WordTest {
     }
 
     @Test
+    public void find_all_occurrence_when_only_one_exist_at_start() {
+        Word wordLocator = Word.findAll(FIRST_WORD);
+        List<TargetRange> results = wordLocator.locate(UNIQUE_CONTENT);
+
+        assertThat(results).hasSize(1)
+                           .containsOnly(FIRST_WORD_RANGE);
+    }
+
+    @Test
+    public void find_all_occurrence_when_only_one_exist_at_end() {
+        Word wordLocator = Word.findAll(LAST_WORD);
+        List<TargetRange> results = wordLocator.locate(UNIQUE_CONTENT);
+
+        assertThat(results).hasSize(1)
+                           .containsOnly(LAST_WORD_RANGE);
+    }
+
+    @Test
     public void find_all_occurrence_when_multiple_exist() {
         Word wordLocator = Word.findAll(MIDDLE_WORD);
         List<TargetRange> results = wordLocator.locate(REPEATED_CONTENT);
-        assertThat(results).hasSize(3);
 
-        int startIndex = 5;
-        for (TargetRange result : results) {
-            int endIndex = startIndex + MIDDLE_WORD.length() - 1;
-            TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-            assertThat(result).isEqualTo(expectedResult);
-            startIndex = endIndex + 1;
-        }
+        assertThat(results).hasSize(3)
+                           .containsOnly(REPEATED_MIDDLE_WORD_RANGE_1,
+                                         REPEATED_MIDDLE_WORD_RANGE_2,
+                                         REPEATED_MIDDLE_WORD_RANGE_3);
     }
 
     @Test

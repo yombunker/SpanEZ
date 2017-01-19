@@ -30,10 +30,9 @@ public class RangeTest {
     public void range_should_not_change() {
         Range range = Range.from(RANGE_START, RANGE_END);
         List<TargetRange> results = range.locate(CONTENT_DOES_NOT_MATTER);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
         TargetRange expectedResult = TargetRange.from(RANGE_START, RANGE_END);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(expectedResult);
     }
 }

@@ -40,8 +40,7 @@ public class TargetRangeTest {
         final int hashCode = targetRange.hashCode();
 
         TargetRange otherRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
-        final int otherHashCode = otherRange.hashCode();
-        assertThat(hashCode).isNotEqualTo(otherHashCode);
+        assertThat(hashCode).isNotEqualTo(otherRange.hashCode());
     }
 
     @Test
@@ -64,16 +63,16 @@ public class TargetRangeTest {
     public void target_range_must_not_be_equal() {
         TargetRange targetRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
 
-        TargetRange notExpectedResult = TargetRange.from(RANGE_ONE, RANGE_FIVE);
-        assertThat(targetRange).isNotEqualTo(notExpectedResult);
+        TargetRange expectedResult = TargetRange.from(RANGE_ONE, RANGE_FIVE);
+        assertThat(targetRange).isNotEqualTo(expectedResult);
     }
 
     @Test
     public void target_range_start_must_not_be_equal() {
         TargetRange targetRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
 
-        TargetRange notExpectedResult = TargetRange.from(RANGE_ONE, RANGE_TEN);
-        assertThat(targetRange).isNotEqualTo(notExpectedResult);
+        TargetRange expectedResult = TargetRange.from(RANGE_ONE, RANGE_TEN);
+        assertThat(targetRange).isNotEqualTo(expectedResult);
     }
 
     @Test
@@ -86,8 +85,8 @@ public class TargetRangeTest {
     public void target_range_end_must_not_be_equal() {
         TargetRange targetRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
 
-        TargetRange notExpectedResult = TargetRange.from(RANGE_ZERO, RANGE_FIVE);
-        assertThat(targetRange).isNotEqualTo(notExpectedResult);
+        TargetRange expectedResult = TargetRange.from(RANGE_ZERO, RANGE_FIVE);
+        assertThat(targetRange).isNotEqualTo(expectedResult);
     }
 
     @Test

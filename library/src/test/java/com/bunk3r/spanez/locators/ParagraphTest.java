@@ -25,9 +25,11 @@ public class ParagraphTest {
     private static final String EMPTY_CONTENT = "";
     private static final String NEW_LINES_CONTENT = "\n\n\n\n";
     private static final String SINGLE_PARAGRAPH_CONTENT = NEW_LINES_CONTENT + FIRST_PARAGRAPH_CONTENT + NEW_LINES_CONTENT;
-    private static final String MULTIPLE_PARAGRAPHS_CONTENT = FIRST_PARAGRAPH_CONTENT + "\n"
-            + SECOND_PARAGRAPH_CONTENT + "\n"
-            + THIRD_PARAGRAPH_CONTENT;
+    private static final String MULTIPLE_PARAGRAPHS_CONTENT = FIRST_PARAGRAPH_CONTENT + "\n" + SECOND_PARAGRAPH_CONTENT + "\n" + THIRD_PARAGRAPH_CONTENT;
+
+    private static final TargetRange FIRST_PARAGRAPH_RANGE = TargetRange.from(0, 15);
+    private static final TargetRange SECOND_PARAGRAPH_RANGE = TargetRange.from(16, 32);
+    private static final TargetRange THIRD_PARAGRAPH_RANGE = TargetRange.from(33, 47);
 
     @Test
     public void find_by_number_when_content_is_empty() {
@@ -47,53 +49,39 @@ public class ParagraphTest {
     public void find_by_number_when_empty_paragraphs_exist() {
         Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
         List<TargetRange> results = paragraph.locate(SINGLE_PARAGRAPH_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
         int startIndex = 4;
         int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(expectedResult);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_start() {
         Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        int startIndex = 0;
-        int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(FIRST_PARAGRAPH_RANGE);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_center() {
         Paragraph paragraph = Paragraph.number(MIDDLE_PARAGRAPH);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        final int startIndex = 16;
-        final int endIndex = startIndex + SECOND_PARAGRAPH_CONTENT.length();
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(SECOND_PARAGRAPH_RANGE);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_end() {
         Paragraph paragraph = Paragraph.number(LAST_PARAGRAPH);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        final int startIndex = 33;
-        final int endIndex = startIndex + THIRD_PARAGRAPH_CONTENT.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
-        assertThat(endIndex).isLessThan(MULTIPLE_PARAGRAPHS_CONTENT.length());
+        assertThat(results).hasSize(1)
+                           .containsOnly(THIRD_PARAGRAPH_RANGE);
     }
 
     @Test
@@ -128,13 +116,12 @@ public class ParagraphTest {
     public void find_by_content_when_empty_paragraphs_exist() {
         Paragraph paragraph = Paragraph.containing(PARAGRAPH_EXCERPT);
         List<TargetRange> results = paragraph.locate(SINGLE_PARAGRAPH_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
         int startIndex = 4;
         int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(expectedResult);
     }
 
     @Test
@@ -148,39 +135,37 @@ public class ParagraphTest {
     public void find_by_content_when_paragraph_does_exist_at_start() {
         Paragraph paragraph = Paragraph.containing(FIRST_PARAGRAPH_CONTENT);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        final int startIndex = 0;
-        final int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(FIRST_PARAGRAPH_RANGE);
     }
 
     @Test
     public void find_by_content_when_paragraph_does_exist_at_center() {
         Paragraph paragraph = Paragraph.containing(SECOND_PARAGRAPH_CONTENT);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        final int startIndex = 16;
-        final int endIndex = startIndex + SECOND_PARAGRAPH_CONTENT.length();
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
+        assertThat(results).hasSize(1)
+                           .containsOnly(SECOND_PARAGRAPH_RANGE);
     }
 
     @Test
     public void find_by_content_when_paragraph_does_exist_at_end() {
         Paragraph paragraph = Paragraph.containing(THIRD_PARAGRAPH_CONTENT);
         List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
-        assertThat(results).hasSize(1);
 
-        TargetRange result = results.get(0);
-        final int startIndex = 33;
-        final int endIndex = startIndex + THIRD_PARAGRAPH_CONTENT.length() - 1;
-        TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertThat(result).isEqualTo(expectedResult);
-        assertThat(endIndex).isLessThan(MULTIPLE_PARAGRAPHS_CONTENT.length());
+        assertThat(results).hasSize(1)
+                           .containsOnly(THIRD_PARAGRAPH_RANGE);
+    }
+
+    @Test
+    public void find_by_content_when_multiple_paragraphs_exist() {
+        Paragraph paragraph = Paragraph.containing(PARAGRAPH_EXCERPT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+
+        assertThat(results).hasSize(3)
+                           .containsOnly(FIRST_PARAGRAPH_RANGE,
+                                         SECOND_PARAGRAPH_RANGE,
+                                         THIRD_PARAGRAPH_RANGE);
     }
 }
