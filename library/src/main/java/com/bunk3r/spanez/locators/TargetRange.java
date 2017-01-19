@@ -37,12 +37,25 @@ public class TargetRange {
     }
 
     @Override
+    public String toString() {
+        return "TargetRange{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TargetRange)) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof TargetRange)) {
+            return false;
+        }
 
         TargetRange that = (TargetRange) o;
-        return  (start == that.start) && (end == that.end);
+        return start == that.start && end == that.end;
 
     }
 

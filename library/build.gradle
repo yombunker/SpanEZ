@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.noveogroup.android.check'
 apply plugin: 'jacoco-android'
-apply plugin: 'com.novoda.bintray-release'
 
 //noinspection GroovyMissingReturnStatement
 android {
@@ -20,20 +20,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    check {
+        abortOnError true
+        checkstyle { config hard() }
+        findbugs { config hard() }
+        pmd { config hard() }
+    }
 }
 
 dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:3.6.1'
     testCompile 'org.mockito:mockito-core:2.6.3'
-}
-
-publish {
-    userOrg = 'yombunker'
-    groupId = 'com.bunk3r'
-    artifactId = 'spanez'
-    version = '2.0.1'
-    desc = 'Android library that simplifies the use of Spans inside strings'
-    website = 'https://github.com/yombunker/SpanEZ'
 }

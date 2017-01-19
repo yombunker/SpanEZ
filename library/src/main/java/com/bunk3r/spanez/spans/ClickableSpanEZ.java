@@ -21,6 +21,7 @@ public class ClickableSpanEZ extends ClickableSpan {
     private final String text;
 
     private ClickableSpanEZ(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
+        super();
         spanClickListener = onSpanClickListener;
         text = content;
     }

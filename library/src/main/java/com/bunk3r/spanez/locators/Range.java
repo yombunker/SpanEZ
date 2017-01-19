@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class Range implements Locator {
+public final class Range implements Locator {
     public static Range from(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
         if (end < start) {
             throw new IllegalArgumentException("The end of the range shouldn't be before the start");

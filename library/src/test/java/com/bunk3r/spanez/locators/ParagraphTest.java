@@ -4,205 +4,183 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * Part of SpanEZ
  * Created by joragu on 1/13/2017.
  */
 public class ParagraphTest {
+    private static final int FIRST_PARAGRAPH = 1;
+    private static final int MIDDLE_PARAGRAPH = 2;
+    private static final int LAST_PARAGRAPH = 3;
+    private static final int NOT_EXISTENT_PARAGRAPH = 4;
+
+    private static final String EMPTY_EXCERPT = "";
+    private static final String PARAGRAPH_EXCERPT = "paragraph";
+    private static final String NOT_EXISTENT_EXCERPT = "random";
+    private static final String FIRST_PARAGRAPH_CONTENT = "First paragraph";
+    private static final String SECOND_PARAGRAPH_CONTENT = "Second paragraph";
+    private static final String THIRD_PARAGRAPH_CONTENT = "Third paragraph";
+    private static final String EMPTY_CONTENT = "";
+    private static final String NEW_LINES_CONTENT = "\n\n\n\n";
+    private static final String SINGLE_PARAGRAPH_CONTENT = NEW_LINES_CONTENT + FIRST_PARAGRAPH_CONTENT + NEW_LINES_CONTENT;
+    private static final String MULTIPLE_PARAGRAPHS_CONTENT = FIRST_PARAGRAPH_CONTENT + "\n"
+            + SECOND_PARAGRAPH_CONTENT + "\n"
+            + THIRD_PARAGRAPH_CONTENT;
 
     @Test
     public void find_by_number_when_content_is_empty() {
-        final String CONTENT = "";
-        final int paragraphNumber = 1;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(EMPTY_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_number_when_content_is_new_lines() {
-        final String CONTENT = "\n\n\n\n";
-        final int paragraphNumber = 1;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(NEW_LINES_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_number_when_empty_paragraphs_exist() {
-        final String CONTENT = "\n\nThird paragraph\n\n";
-        final int paragraphNumber = 1;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(SINGLE_PARAGRAPH_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 2;
-        final int endIndex = startIndex + "Third paragraph".length();
+        int startIndex = 4;
+        int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_start() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final int paragraphNumber = 1;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.number(FIRST_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 0;
-        final int endIndex = startIndex + "First paragraph".length();
+        int startIndex = 0;
+        int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_center() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final int paragraphNumber = 3;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.number(MIDDLE_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 33;
-        final int endIndex = startIndex + "Third paragraph".length();
+        final int startIndex = 16;
+        final int endIndex = startIndex + SECOND_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_number_when_paragraph_does_exist_at_end() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final int paragraphNumber = 4;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.number(LAST_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 49;
-        final int endIndex = startIndex + "Fourth paragraph".length() - 1;
+        final int startIndex = 33;
+        final int endIndex = startIndex + THIRD_PARAGRAPH_CONTENT.length() - 1;
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
-
-        assertTrue("The range should't be outside the content", endIndex < CONTENT.length());
+        assertThat(result).isEqualTo(expectedResult);
+        assertThat(endIndex).isLessThan(MULTIPLE_PARAGRAPHS_CONTENT.length());
     }
 
     @Test
     public void find_by_number_when_paragraph_does_not_exist() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final int paragraphNumber = 5;
-        Paragraph paragraph = Paragraph.number(paragraphNumber);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.number(NOT_EXISTENT_PARAGRAPH);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_content_when_content_is_empty() {
-        final String CONTENT = "";
-        final String paragraphExcerpt = "not empty";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.containing(PARAGRAPH_EXCERPT);
+        List<TargetRange> results = paragraph.locate(EMPTY_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_content_when_content_is_new_lines() {
-        final String CONTENT = "\n\n\n\n";
-        final String paragraphExcerpt = "not empty";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.containing(PARAGRAPH_EXCERPT);
+        List<TargetRange> results = paragraph.locate(NEW_LINES_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_content_when_excerpt_is_empty() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final String paragraphExcerpt = "";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.containing(EMPTY_EXCERPT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_content_when_empty_paragraphs_exist() {
-        final String CONTENT = "\n\nThird paragraph\nFourth paragraph\n";
-        final String paragraphExcerpt = "paragraph";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 2 result", results.size() == 2);
+        Paragraph paragraph = Paragraph.containing(PARAGRAPH_EXCERPT);
+        List<TargetRange> results = paragraph.locate(SINGLE_PARAGRAPH_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        int startIndex = 2;
-        int endIndex = startIndex + "Third paragraph".length();
+        int startIndex = 4;
+        int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
-
-        result = results.get(1);
-        startIndex = 18;
-        endIndex = startIndex + "Fourth paragraph".length();
-        expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_content_when_excerpt_not_present_in_content() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final String paragraphExcerpt = "random";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must not be any result", results.size() == 0);
+        Paragraph paragraph = Paragraph.containing(NOT_EXISTENT_EXCERPT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).isEmpty();
     }
 
     @Test
     public void find_by_content_when_paragraph_does_exist_at_start() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final String paragraphExcerpt = "First paragraph";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.containing(FIRST_PARAGRAPH_CONTENT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
         final int startIndex = 0;
-        final int endIndex = startIndex + "First paragraph".length();
+        final int endIndex = startIndex + FIRST_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_content_when_paragraph_does_exist_at_center() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final String paragraphExcerpt = "Third paragraph";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.containing(SECOND_PARAGRAPH_CONTENT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 33;
-        final int endIndex = startIndex + "Third paragraph".length();
+        final int startIndex = 16;
+        final int endIndex = startIndex + SECOND_PARAGRAPH_CONTENT.length();
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     public void find_by_content_when_paragraph_does_exist_at_end() {
-        final String CONTENT = "First paragraph\nSecond paragraph\nThird paragraph\nFourth paragraph";
-        final String paragraphExcerpt = "Fourth paragraph";
-        Paragraph paragraph = Paragraph.containing(paragraphExcerpt);
-        List<TargetRange> results = paragraph.locate(CONTENT);
-        assertTrue("There must be exactly 1 result", results.size() == 1);
+        Paragraph paragraph = Paragraph.containing(THIRD_PARAGRAPH_CONTENT);
+        List<TargetRange> results = paragraph.locate(MULTIPLE_PARAGRAPHS_CONTENT);
+        assertThat(results).hasSize(1);
 
         TargetRange result = results.get(0);
-        final int startIndex = 49;
-        final int endIndex = startIndex + "Fourth paragraph".length() - 1;
+        final int startIndex = 33;
+        final int endIndex = startIndex + THIRD_PARAGRAPH_CONTENT.length() - 1;
         TargetRange expectedResult = TargetRange.from(startIndex, endIndex);
-        assertTrue("The range for this paragraph was incorrect", expectedResult.equals(result));
-
-        assertTrue("The range should't be outside the content", endIndex < CONTENT.length());
+        assertThat(result).isEqualTo(expectedResult);
+        assertThat(endIndex).isLessThan(MULTIPLE_PARAGRAPHS_CONTENT.length());
     }
-
 }
