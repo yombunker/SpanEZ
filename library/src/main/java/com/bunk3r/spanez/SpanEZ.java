@@ -47,7 +47,7 @@ import java.util.Locale;
  * Created by joragu on 1/12/2017.
  */
 
-public class SpanEZ implements ContentEZ, StyleEZ {
+public final class SpanEZ implements ContentEZ, StyleEZ {
     private static final int RESOURCE_NOT_SET = -1;
 
     /**

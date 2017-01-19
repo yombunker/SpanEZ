@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.noveogroup.android.check'
+//apply plugin: 'com.noveogroup.android.check'
 apply plugin: 'jacoco-android'
 
 //noinspection GroovyMissingReturnStatement
@@ -21,12 +21,12 @@ android {
         }
     }
 
-    check {
-        abortOnError true
-        checkstyle { config hard() }
-        findbugs { config hard() }
-        pmd { config hard() }
-    }
+//    check {
+//        abortOnError true
+//        checkstyle { config hard() }
+//        findbugs { config hard() }
+//        pmd { config hard() }
+//    }
 }
 
 dependencies {

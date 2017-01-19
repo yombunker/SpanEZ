@@ -11,7 +11,7 @@ import com.bunk3r.spanez.listeners.OnSpanClickListener;
  * Created by joragu on 1/1/2017.
  */
 
-public class ClickableSpanEZ extends ClickableSpan {
+public final class ClickableSpanEZ extends ClickableSpan {
     @NonNull
     public static ClickableSpan from(@NonNull OnSpanClickListener onSpanClickListener, @NonNull String content) {
         return new ClickableSpanEZ(onSpanClickListener, content);

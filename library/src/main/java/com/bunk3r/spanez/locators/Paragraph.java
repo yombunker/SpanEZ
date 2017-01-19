@@ -12,7 +12,7 @@ import java.util.List;
  */
 @SuppressWarnings({"WeakerAccess",
                    "unused"})
-public class Paragraph implements Locator {
+public final class Paragraph implements Locator {
     private static final int NOT_FOUND = -1;
 
     public static Paragraph number(@IntRange(from = 1) int paragraphNumber) {

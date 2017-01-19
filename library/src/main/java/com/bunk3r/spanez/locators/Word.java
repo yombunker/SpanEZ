@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class Word implements Locator {
+public final class Word implements Locator {
     private static final int NOT_FOUND = -1;
 
     public static Word findFirst(@NonNull String word) {
