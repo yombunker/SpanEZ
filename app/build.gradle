@@ -1,23 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion projectCompileSdk
+    buildToolsVersion projectBuildTools
     defaultConfig {
         applicationId "com.bunk3r.spanez.sample"
-        minSdkVersion 21
-        targetSdkVersion 25
-        versionCode 2
-        versionName "2.0"
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
+        versionCode projectVersionCode
+        versionName projectVersionName
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    lintOptions {
-        abortOnError false
     }
 }
 

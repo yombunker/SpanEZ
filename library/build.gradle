@@ -1,17 +1,16 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.noveogroup.android.check'
 apply plugin: 'jacoco-android'
 
 //noinspection GroovyMissingReturnStatement
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion projectCompileSdk
+    buildToolsVersion projectBuildTools
 
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 3
-        versionName "2.0.1"
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
+        versionCode projectVersionCode
+        versionName projectVersionName
     }
 
     buildTypes {
@@ -20,13 +19,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-//    check {
-//        abortOnError true
-//        checkstyle { config hard() }
-//        findbugs { config hard() }
-//        pmd { config hard() }
-//    }
 }
 
 dependencies {

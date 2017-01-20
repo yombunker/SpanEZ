@@ -231,7 +231,7 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
         for (TargetRange targetRange : locator.locate(content)) {
             ClickableSpan clickSpan = ClickableSpanEZ.from(spanClick,
                                                            content.substring(targetRange.getStart(),
-                                                                             targetRange.getEnd()));
+                                                                             targetRange.getEnd() + 1));
             target.setMovementMethod(new LinkMovementMethod());
             addSpan(targetRange, clickSpan);
         }
