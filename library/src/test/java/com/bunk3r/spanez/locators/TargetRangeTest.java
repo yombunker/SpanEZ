@@ -56,7 +56,7 @@ public class TargetRangeTest {
     public void target_range_compare_same_instance() {
         TargetRange targetRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
 
-        assertThat(targetRange).isSameAs(targetRange);
+        assertThat(targetRange).isEqualTo(targetRange);
     }
 
     @Test
@@ -95,5 +95,12 @@ public class TargetRangeTest {
 
         assertThat(targetRange.getStart()).isEqualTo(RANGE_ZERO);
         assertThat(targetRange.getEnd()).isEqualTo(RANGE_TEN);
+    }
+
+    @Test
+    public void validating_target_range_to_string() {
+        TargetRange targetRange = TargetRange.from(RANGE_ZERO, RANGE_TEN);
+
+        assertThat(targetRange).hasToString("TargetRange{" + "start=" + RANGE_ZERO + ", end=" + RANGE_TEN + '}');
     }
 }
