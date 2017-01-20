@@ -10,15 +10,6 @@ android:
     - platform-tools
     - extra-android-m2repository
 
-#
-#before_script:
-#  # Create and start emulator
-#  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-#  - emulator -avd test -no-skin -no-audio -no-window &
-#  - android-wait-for-emulator
-#  - adb shell input keyevent 82 &
-#
-
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -28,11 +19,25 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+    - $HOME/.sonar/cache
+    - $HOME/.m2
+
+env:
+  global:
+  - secure: Ad76+gWNzIJYv+UKIaMxk+Cj2tXSMr88JgSsNaLxk3wiAs4xnknpWdIxoDqpkt6SkvYts2/27dM0bus7LkI6+Ude9ObkxExMkkFmSQwMs3nmsP6f3zUGxUiS0vfjM60u3Zn/yPtbm4N5LX48ufRpfHZfHXgeS+4JUHkWdzE6HL8ywxSQ6AM3CiEO/SS0+HROJq8uPcDng/WcB6LZW/GupHBTPXwKQEmHjZjFiDmlFjV3wX1bjPkaydsJLf0+Llxg7eAkD4t/dpTjrzZQkYZDjmx0eN/zD8gch+HioeuOU6ox9mk2wZRZVmPp6duMnAXJySSSpbKmhOCrf7FsZ6hxKzgfk9Duvz4OdIRW/zc8GboDx+1oHttbLCF8Pj8K7Rmd+gJMzhpvcKHZJb0eV0zAfC669I2ljCjIlffVliyDKPtD9YgyskG2EkkNSkAIo88KBJ0V/RzNxB5rBEn8fSXLorUwLjDQxog4Dqlh8XWt89xmmvvJj3dwz+L5xDnmRKIizTK/ovxDulfpGzQF0GD/qgF9UdHfghhsr7zhsQFaogaztiuvjKGd4+bC9fkfgzvftT3vvCp/Teorcq48ts/m09DuuS7CtxFk9RegFSmf0gPfaRIfkRttdZBbzjCIHEe9GFr+6aiVMgw20zeqOKLoSGy7Xl7YyCb3w/WiyrJls9w=
+  - secure: tZt10m2kLImdwEWxRVKrHBE/6cVV2nOh737bc+HwBnATw7QDe+esYsHcNGWHhfAfHpyolkvdkPnoNp+mow9j7hgGIaOqpru7P5lf+5lu1Rf/rqDmaB+W8xjNA7x88g0EOihauy7IZ7Q/5gfbMlO2kYUvxqrOdOp0x/SbuAPH1AjW9B0ZC0fNxcsI3ENn+jJF80MKnEWJC12Bpp2+wjDqSVGqOtAqz1u04If15+TvIlnSGc5CNw2MyALyzXfz/qG/y1HpIdWEPSZLqT+907ZhnlEshNec7lMh2DlwHuUUcsCLAE7emfWBRdifaVAtOqrD5d7QEsJzpk8tOddbt5JfrBplic4KCQ7y4qcS9rBtdX30BpS/Oeb44RdRh87og126iLsJ2ROYR3+eItIV1d/ndkJJ007Z0oVF0jSc6iaiLOP8gjcqkQ+pdlAUu9uQr7NPma+MvMDco+A2gJymUSIefl0S8Pkx+RPmBs5Usf+Gzp3T7ieXbxdOTUJfpx+jbkU4/wNOx939UtkbhzMM3ulkEzjUhmV9vBto98WkF3MCEDH0UY2tHSadTqFS5OnCECembjGL/0AnqpfodTkxEkTBAPTkVakbqUpdta89MFmOXk0Qc/jY1bFAsxkRKeT5BbiQORmUInVxHu7NFkc+pN/ZkZN32T+4Tnh+XDS4jixl/iE=
+
+addons:
+  sonarqube:
+    branches:
+      - master
+      - development
 
 before_script:
  - chmod +x gradlew
 
-script: ./gradlew build jacocoTestReport
+script:
+  - ./gradlew aR testRelease
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - sonar-scanner
