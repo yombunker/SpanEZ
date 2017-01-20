@@ -3,6 +3,8 @@ SpanEZ
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 [![Build status](https://travis-ci.org/yombunker/SpanEZ.svg?branch=master)](https://travis-ci.org/yombunker/SpanEZ)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=com.bunk3r:spanez:development)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:development)
+[![Duplicated Code](https://sonarqube.com/api/badges/measure?key=com.bunk3r:spanez:development&metric=duplicated_lines_density)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:development)
 [![codecov](https://codecov.io/gh/yombunker/SpanEZ/branch/master/graph/badge.svg)](https://codecov.io/gh/yombunker/SpanEZ)
 [![Download](https://api.bintray.com/packages/yombunker/maven/spanez/images/download.svg) ](https://bintray.com/yombunker/maven/spanez/_latestVersion)
 

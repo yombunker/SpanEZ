@@ -41,5 +41,5 @@ script:
   - ./gradlew build jacocoTestReport --continue
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
   - sonar-scanner
+  - bash <(curl -s https://codecov.io/bash)
