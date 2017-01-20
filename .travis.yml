@@ -13,6 +13,7 @@ android:
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -fr $HOME/.sonar/cache
 
 cache:
   directories:
@@ -37,7 +38,7 @@ before_script:
  - chmod +x gradlew
 
 script:
-  - ./gradlew aR testRelease
+  - ./gradlew build test jacocoTestReport --continue
 
 after_success:
   - sonar-scanner
