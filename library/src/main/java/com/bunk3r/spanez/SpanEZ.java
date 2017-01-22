@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.annotation.UiThread;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.text.SpannableString;
@@ -34,21 +35,39 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.widget.TextView;
 
-import com.bunk3r.spanez.listeners.OnSpanClickListener;
-import com.bunk3r.spanez.locators.Locator;
-import com.bunk3r.spanez.locators.Paragraph;
-import com.bunk3r.spanez.locators.TargetRange;
+import com.bunk3r.spanez.api.ContentEZ;
+import com.bunk3r.spanez.api.EZ;
+import com.bunk3r.spanez.api.Locator;
+import com.bunk3r.spanez.api.StyleEZ;
+import com.bunk3r.spanez.callbacks.OnSpanClickListener;
+import com.bunk3r.spanez.models.ParagraphLocator;
+import com.bunk3r.spanez.models.TargetRange;
 import com.bunk3r.spanez.spans.ClickableSpanEZ;
 
 import java.util.Locale;
+
+import static com.bunk3r.spanez.api.EZ.BOLD;
+import static com.bunk3r.spanez.api.EZ.ITALIC;
+import static com.bunk3r.spanez.api.EZ.STRIKETHROUGH;
+import static com.bunk3r.spanez.api.EZ.SUBSCRIPT;
+import static com.bunk3r.spanez.api.EZ.SUPERSCRIPT;
+import static com.bunk3r.spanez.api.EZ.UNDERLINE;
 
 /**
  * Part of SpanEZ
  * Created by joragu on 1/12/2017.
  */
 
-public final class SpanEZ implements ContentEZ, StyleEZ {
+public class SpanEZ implements ContentEZ, StyleEZ {
     private static final int RESOURCE_NOT_SET = -1;
+
+    private final TextView target;
+    private final Context context;
+    private final Resources resources;
+
+    private int spanFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+    private String content;
+    private SpannableString spannableContent;
 
     /**
      * This is the starting place, once the target has been selected you can apply all the changes
@@ -60,14 +79,6 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     public static ContentEZ from(TextView target) {
         return new SpanEZ(target);
     }
-
-    private final TextView target;
-    private final Context context;
-    private final Resources resources;
-
-    private String content;
-    private SpannableString spannableContent;
-    private int spanFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
     private SpanEZ(@NonNull TextView targetView) {
         target = targetView;
@@ -132,7 +143,7 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ style(@NonNull Locator locator, @STYLE int styles) {
+    public StyleEZ style(@NonNull Locator locator, @EZ.STYLE int styles) {
         if (isFlagSet(styles, BOLD)) {
             bold(locator);
         }
@@ -231,7 +242,8 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
         for (TargetRange targetRange : locator.locate(content)) {
             ClickableSpan clickSpan = ClickableSpanEZ.from(spanClick,
                                                            content.substring(targetRange.getStart(),
-                                                                             targetRange.getEnd() + 1));
+                                                                             targetRange
+                                                                                     .getEnd() + 1));
             target.setMovementMethod(new LinkMovementMethod());
             addSpan(targetRange, clickSpan);
         }
@@ -255,12 +267,12 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ quote(@NonNull Paragraph paragraph) {
+    public StyleEZ quote(@NonNull ParagraphLocator paragraph) {
         return quote(paragraph, RESOURCE_NOT_SET);
     }
 
     @Override
-    public StyleEZ quote(@NonNull Paragraph paragraph, @ColorRes int quoteColorResId) {
+    public StyleEZ quote(@NonNull ParagraphLocator paragraph, @ColorRes int quoteColorResId) {
         final QuoteSpan quoteSpan;
         if (quoteColorResId == RESOURCE_NOT_SET) {
             quoteSpan = new QuoteSpan();
@@ -274,21 +286,21 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ alignCenter(@NonNull Paragraph paragraph) {
+    public StyleEZ alignCenter(@NonNull ParagraphLocator paragraph) {
         AlignmentSpan centerSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER);
         addMultipleSpan(paragraph, centerSpan);
         return this;
     }
 
     @Override
-    public StyleEZ alignEnd(@NonNull Paragraph paragraph) {
+    public StyleEZ alignEnd(@NonNull ParagraphLocator paragraph) {
         AlignmentSpan oppositeSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE);
         addMultipleSpan(paragraph, oppositeSpan);
         return this;
     }
 
     @Override
-    public StyleEZ alignStart(@NonNull Paragraph paragraph) {
+    public StyleEZ alignStart(@NonNull ParagraphLocator paragraph) {
         AlignmentSpan normalSpan = new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL);
         addMultipleSpan(paragraph, normalSpan);
         return this;
@@ -302,7 +314,7 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     }
 
     @Override
-    public StyleEZ font(@NonNull Locator locator, @NonNull @FontFamily String fontFamily) {
+    public StyleEZ font(@NonNull Locator locator, @NonNull @EZ.FontFamily String fontFamily) {
         TypefaceSpan typefaceSpan = new TypefaceSpan(fontFamily);
         addMultipleSpan(locator, typefaceSpan);
         return this;
@@ -374,7 +386,9 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
      * @param targetRange the range were the span will be applied to
      * @param span        the span to be applied
      */
-    private void addSpan(@NonNull TargetRange targetRange, @NonNull Object span) {
+    @SuppressWarnings("WeakerAccess")
+    @VisibleForTesting
+    protected void addSpan(@NonNull TargetRange targetRange, @NonNull Object span) {
         final int start = targetRange.getStart();
         final int end = targetRange.getEnd();
         // Added 1 to the span, because it seems that internally it does exclusive range
@@ -382,7 +396,7 @@ public final class SpanEZ implements ContentEZ, StyleEZ {
     }
 
 
-    private boolean isFlagSet(@STYLE int flag, int flagToVerify) {
+    private boolean isFlagSet(@EZ.STYLE int flag, int flagToVerify) {
         return (flag & flagToVerify) == flagToVerify;
     }
 

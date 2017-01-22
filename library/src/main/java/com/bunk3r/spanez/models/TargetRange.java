@@ -1,4 +1,4 @@
-package com.bunk3r.spanez.locators;
+package com.bunk3r.spanez.models;
 
 import android.support.annotation.IntRange;
 
@@ -7,6 +7,12 @@ import android.support.annotation.IntRange;
  * Created by joragu on 1/12/2017.
  */
 public final class TargetRange {
+    @IntRange(from = 0)
+    private final int start;
+
+    @IntRange(from = 0)
+    private final int end;
+
     public static TargetRange from(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
         if (end < start) {
             throw new IllegalArgumentException("The end of the range shouldn't be before the start");
@@ -14,12 +20,6 @@ public final class TargetRange {
 
         return new TargetRange(start, end);
     }
-
-    @IntRange(from = 0)
-    private final int start;
-
-    @IntRange(from = 0)
-    private final int end;
 
     private TargetRange(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
         this.start = start;

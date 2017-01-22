@@ -2,7 +2,7 @@ package com.bunk3r.spanez.spans;
 
 import android.text.style.ClickableSpan;
 
-import com.bunk3r.spanez.listeners.OnSpanClickListener;
+import com.bunk3r.spanez.callbacks.OnSpanClickListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,8 @@
-package com.bunk3r.spanez.locators;
+package com.bunk3r.spanez.api;
 
 import android.support.annotation.NonNull;
+
+import com.bunk3r.spanez.models.TargetRange;
 
 import java.util.List;
 

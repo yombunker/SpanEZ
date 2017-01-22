@@ -1,5 +1,7 @@
 package com.bunk3r.spanez.locators;
 
+import com.bunk3r.spanez.models.TargetRange;
+
 import org.junit.Test;
 
 import java.util.List;

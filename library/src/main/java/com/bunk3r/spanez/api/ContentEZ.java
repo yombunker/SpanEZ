@@ -1,4 +1,4 @@
-package com.bunk3r.spanez;
+package com.bunk3r.spanez.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;

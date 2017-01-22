@@ -3,7 +3,11 @@ package com.bunk3r.spanez.locators;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
+import com.bunk3r.spanez.api.Locator;
+import com.bunk3r.spanez.models.TargetRange;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,6 +17,10 @@ import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public final class Range implements Locator {
+    private final TargetRange range;
+    private final List<TargetRange> ranges = new ArrayList<>(1);
+    private final List<TargetRange> empty = Collections.emptyList();
+
     public static Range from(@IntRange(from = 0) int start, @IntRange(from = 0) int end) {
         if (end < start) {
             throw new IllegalArgumentException("The end of the range shouldn't be before the start");
@@ -21,16 +29,17 @@ public final class Range implements Locator {
         return new Range(start, end);
     }
 
-    private final List<TargetRange> ranges = new ArrayList<>(1);
-
     private Range(int start, int end) {
-        TargetRange range = TargetRange.from(start, end);
+        range = TargetRange.from(start, end);
         ranges.add(range);
     }
 
     @NonNull
     @Override
     public List<TargetRange> locate(@NonNull String content) {
-        return ranges;
+        final int contentLength = content.length();
+        return (range.getStart() < contentLength && range.getEnd() < contentLength)
+                ? ranges
+                : empty;
     }
 }

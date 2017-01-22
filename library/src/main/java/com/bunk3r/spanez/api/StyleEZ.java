@@ -1,22 +1,16 @@
-package com.bunk3r.spanez;
+package com.bunk3r.spanez.api;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
-import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.support.annotation.UiThread;
 
-import com.bunk3r.spanez.listeners.OnSpanClickListener;
-import com.bunk3r.spanez.locators.Locator;
-import com.bunk3r.spanez.locators.Paragraph;
+import com.bunk3r.spanez.callbacks.OnSpanClickListener;
+import com.bunk3r.spanez.models.ParagraphLocator;
 
-import java.lang.annotation.Retention;
 import java.util.Locale;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Part of SpanEZ
@@ -25,37 +19,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @SuppressWarnings({"unused",
                    "WeakerAccess"})
 public interface StyleEZ {
-    int BOLD = 1;
-    int ITALIC = 1 << 1;
-    int UNDERLINE = 1 << 2;
-    int STRIKETHROUGH = 1 << 3;
-    int SUBSCRIPT = 1 << 4;
-    int SUPERSCRIPT = 1 << 5;
-
-    @Retention(SOURCE)
-    @IntDef(flag = true, value = {BOLD,
-                                  ITALIC,
-                                  UNDERLINE,
-                                  STRIKETHROUGH,
-                                  SUBSCRIPT,
-                                  SUPERSCRIPT})
-    @interface STYLE {}
-
-    String MONOSPACE = "monospace";
-    String SERIF = "serif";
-    String SANS_SERIF = "sans-serif";
-    String SANS_SERIF_LIGHT = "sans-serif-light";
-    String SANS_SERIF_CONDENSED = "sans-serif-condensed";
-
-
-    @Retention(SOURCE)
-    @StringDef(value = {MONOSPACE,
-                        SERIF,
-                        SANS_SERIF,
-                        SANS_SERIF_LIGHT,
-                        SANS_SERIF_CONDENSED})
-    @interface FontFamily {}
-
     /**
      * Every call after this will set the {@code Span} to be {@code Inclusive} in both sides, this
      * means that if text is added within that range the new text will keep the same format.
@@ -100,7 +63,7 @@ public interface StyleEZ {
      *                ex. BOLD | ITALIC | UNDERLINE
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ style(@NonNull Locator locator, @STYLE int styles);
+    StyleEZ style(@NonNull Locator locator, @EZ.STYLE int styles);
 
     /**
      * Changes the {@code ForegroundColor} of all the {@code Character} within the given range. Or throws
@@ -139,7 +102,7 @@ public interface StyleEZ {
      * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ quote(@NonNull Paragraph paragraph);
+    StyleEZ quote(@NonNull ParagraphLocator paragraph);
 
     /**
      * Styles the paragraph (with the selected {@code quoteColorResId}) where all the {@code Character}
@@ -150,7 +113,7 @@ public interface StyleEZ {
      * @param quoteColorResId the color to use for the paragraph marker
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ quote(@NonNull Paragraph paragraph, @ColorRes int quoteColorResId);
+    StyleEZ quote(@NonNull ParagraphLocator paragraph, @ColorRes int quoteColorResId);
 
     /**
      * Modifies the gravity of the paragraph to be Center align, this is applied to the location of
@@ -160,7 +123,7 @@ public interface StyleEZ {
      * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignCenter(@NonNull Paragraph paragraph);
+    StyleEZ alignCenter(@NonNull ParagraphLocator paragraph);
 
     /**
      * Modifies the gravity of the paragraph to be Right align for LTR locales, and to be Left align
@@ -171,7 +134,7 @@ public interface StyleEZ {
      * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignEnd(@NonNull Paragraph paragraph);
+    StyleEZ alignEnd(@NonNull ParagraphLocator paragraph);
 
     /**
      * Modifies the gravity of the paragraph to be Left align for LTR locales, and to be Right align
@@ -182,7 +145,7 @@ public interface StyleEZ {
      * @param paragraph the locator to be used to decide were to apply this style
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ alignStart(@NonNull Paragraph paragraph);
+    StyleEZ alignStart(@NonNull ParagraphLocator paragraph);
 
     /**
      * Applies a {@code Link} style to all the {@code Character} within the given range. Or throws
@@ -203,7 +166,7 @@ public interface StyleEZ {
      * @param fontFamily the font family to be use
      * @return the same instance of the object so that chaining is possible
      */
-    StyleEZ font(@NonNull Locator locator, @NonNull @FontFamily String fontFamily);
+    StyleEZ font(@NonNull Locator locator, @NonNull @EZ.FontFamily String fontFamily);
 
     /**
      * Applies the defined style to the {@code Character} within the given range. Or throws

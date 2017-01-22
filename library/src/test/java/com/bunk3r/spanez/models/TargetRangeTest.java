@@ -1,4 +1,4 @@
-package com.bunk3r.spanez.locators;
+package com.bunk3r.spanez.models;
 
 import org.junit.Test;
 
