@@ -1,15 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+ext {
+    projectCompileSdk = 25
+    projectBuildTools = "25.0.2"
+    minSdk = 17
+    targetSdk = 25
+
+    projectVersionCode = 3
+    projectVersionName = "2.0.1"
+}
+
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.novoda:bintray-release:0.4.0'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 

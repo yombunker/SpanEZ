@@ -3,6 +3,8 @@ SpanEZ
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 [![Build status](https://travis-ci.org/yombunker/SpanEZ.svg?branch=master)](https://travis-ci.org/yombunker/SpanEZ)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=com.bunk3r:spanez:master)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:master)
+[![Duplicated Code](https://sonarqube.com/api/badges/measure?key=com.bunk3r:spanez:master&metric=duplicated_lines_density)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:master)
 [![codecov](https://codecov.io/gh/yombunker/SpanEZ/branch/master/graph/badge.svg)](https://codecov.io/gh/yombunker/SpanEZ)
 [![Download](https://api.bintray.com/packages/yombunker/maven/spanez/images/download.svg) ](https://bintray.com/yombunker/maven/spanez/_latestVersion)
 
@@ -16,6 +18,33 @@ Complete abstraction from the Spannable API. Forget about all the boiler plate c
  * By default it does [INCLUSIVE_INCLUSIVE][2] to all the spans
  * After calling any of the inclusive/exclusive methods, all the next methods will be using that flag until apply is called or another flag is used
  * You can create your own locator by extending the Locator interface
+
+How to use
+--------
+
+Let's start with the easiest example, you need just one Span in your content
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private TextView sample;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        sample = (TextView) findViewById(R.id.sample_text);
+        SpanEZ.from(sample)                                         // 1. pass the target TextView
+              .withContent(R.string.lorem_ipsum)                    // 2. pass the content
+              .style(Word.findAll("ipsum dolor"), BOLD | UNDERLINE) // 3. chain styles (optional)
+              .apply();                                             // 4. apply
+    }
+}
+```
+
+Now, let's go to the big leagues, you can get this and even more, and just with a couple of lines:
+
+![Alt text](http://i63.tinypic.com/izcms4.png "Demo app screenshot")
 
 ```java
 public class MainActivity extends AppCompatActivity {

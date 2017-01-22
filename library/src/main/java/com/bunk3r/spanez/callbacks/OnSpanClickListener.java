@@ -1,4 +1,4 @@
-package com.bunk3r.spanez.listeners;
+package com.bunk3r.spanez.callbacks;
 
 /**
  * Part of SpanEZ
