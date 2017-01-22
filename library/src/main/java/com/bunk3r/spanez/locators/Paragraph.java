@@ -3,6 +3,10 @@ package com.bunk3r.spanez.locators;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
+import com.bunk3r.spanez.models.P;
+import com.bunk3r.spanez.models.ParagraphLocator;
+import com.bunk3r.spanez.models.TargetRange;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +16,10 @@ import java.util.List;
  */
 @SuppressWarnings({"WeakerAccess",
                    "unused"})
-public class Paragraph implements Locator {
-    private static final int NOT_FOUND = -1;
+public final class Paragraph extends ParagraphLocator {
+    private final boolean byNumber;
+    private int paragraphNumber;
+    private String excerpt;
 
     public static Paragraph number(@IntRange(from = 1) int paragraphNumber) {
         return new Paragraph(paragraphNumber);
@@ -22,10 +28,6 @@ public class Paragraph implements Locator {
     public static Paragraph containing(@NonNull String excerpt) {
         return new Paragraph(excerpt);
     }
-
-    private final boolean byNumber;
-    private int paragraphNumber;
-    private String excerpt;
 
     private Paragraph(@IntRange(from = 1) int paragraphNumber) {
         this.byNumber = true;
@@ -40,7 +42,7 @@ public class Paragraph implements Locator {
     @NonNull
     @Override
     public List<TargetRange> locate(@NonNull String content) {
-        List<P> paragraphs = splitParagraphs(content);
+        List<P> paragraphs = splitIntoParagraphs(content);
         return byNumber ? locateByNumber(paragraphs) : locateByContent(paragraphs);
     }
 
@@ -49,7 +51,7 @@ public class Paragraph implements Locator {
         List<TargetRange> ranges = new ArrayList<>(1);
         if (paragraphs.size() >= paragraphNumber) {
             P paragraph = paragraphs.get(paragraphNumber - 1);
-            ranges.add(TargetRange.from(paragraph.startIndex, paragraph.endIndex));
+            ranges.add(TargetRange.from(paragraph.getStart(), paragraph.getEnd()));
         }
         return ranges;
     }
@@ -62,47 +64,10 @@ public class Paragraph implements Locator {
         }
 
         for (P paragraph : paragraphs) {
-            if (paragraph.content.contains(excerpt)) {
-                ranges.add(TargetRange.from(paragraph.startIndex, paragraph.endIndex));
+            if (paragraph.getContent().contains(excerpt)) {
+                ranges.add(TargetRange.from(paragraph.getStart(), paragraph.getEnd()));
             }
         }
         return ranges;
-    }
-
-    /**
-     * Splits the content by new line character (\n), any empty paragraph is ignored
-     *
-     * @param content the full content to split into paragraphs
-     * @return a list of {@code P} that contains all the paragraphs
-     */
-    @NonNull
-    private List<P> splitParagraphs(@NonNull String content) {
-        List<P> paragraphs = new ArrayList<>();
-        int startPosition = 0;
-        int newLinePosition;
-
-        do {
-            newLinePosition = content.indexOf('\n', startPosition);
-            int paragraphEnd = newLinePosition != NOT_FOUND ? newLinePosition : content.length();
-            if (paragraphEnd - startPosition > 0) {
-                P paragraph = new P(content, startPosition, paragraphEnd);
-                paragraphs.add(paragraph);
-            }
-            startPosition = newLinePosition + 1;
-        } while (newLinePosition != NOT_FOUND);
-
-        return paragraphs;
-    }
-
-    private static class P {
-        final String content;
-        final int startIndex;
-        final int endIndex;
-
-        P(String fullContent, int startIndex, int endIndex) {
-            this.content = fullContent.substring(startIndex, endIndex);
-            this.startIndex = startIndex;
-            this.endIndex = fullContent.length() != endIndex ? endIndex : endIndex - 1;
-        }
     }
 }

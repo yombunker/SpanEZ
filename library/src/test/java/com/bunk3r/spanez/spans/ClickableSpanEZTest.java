@@ -2,7 +2,7 @@ package com.bunk3r.spanez.spans;
 
 import android.text.style.ClickableSpan;
 
-import com.bunk3r.spanez.listeners.OnSpanClickListener;
+import com.bunk3r.spanez.callbacks.OnSpanClickListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,16 +18,16 @@ import static org.mockito.Mockito.verify;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ClickableSpanEZTest {
+    private static final String FAKE_CONTENT = "Dummy Content";
+
     @Mock
-    OnSpanClickListener mockListener;
+    private OnSpanClickListener mockListener;
 
     @Test
     public void clicking_the_span_trigger_the_callback() {
-        String spanContent = "Dummy Content";
-        ClickableSpan clickableSpanEZ = ClickableSpanEZ.from(mockListener, spanContent);
+        ClickableSpan clickableSpanEZ = ClickableSpanEZ.from(mockListener, FAKE_CONTENT);
 
         clickableSpanEZ.onClick(null);
-        verify(mockListener, times(1)).onSpanClick(spanContent);
+        verify(mockListener, times(1)).onSpanClick(FAKE_CONTENT);
     }
-
 }

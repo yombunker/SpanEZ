@@ -6,15 +6,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bunk3r.spanez.SpanEZ;
-import com.bunk3r.spanez.listeners.OnSpanClickListener;
+import com.bunk3r.spanez.callbacks.OnSpanClickListener;
 import com.bunk3r.spanez.locators.Paragraph;
 import com.bunk3r.spanez.locators.Range;
 import com.bunk3r.spanez.locators.Word;
 
-import static com.bunk3r.spanez.SpanEZ.BOLD;
-import static com.bunk3r.spanez.SpanEZ.ITALIC;
-import static com.bunk3r.spanez.SpanEZ.STRIKETHROUGH;
-import static com.bunk3r.spanez.SpanEZ.UNDERLINE;
+import static com.bunk3r.spanez.api.EZ.BOLD;
+import static com.bunk3r.spanez.api.EZ.ITALIC;
+import static com.bunk3r.spanez.api.EZ.STRIKETHROUGH;
+import static com.bunk3r.spanez.api.EZ.UNDERLINE;
 
 public class MainActivity extends AppCompatActivity {
     private TextView sample;
