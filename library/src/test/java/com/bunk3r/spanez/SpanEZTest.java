@@ -59,7 +59,7 @@ public class SpanEZTest {
 
     @Before
     public void setUp() throws Exception {
-        spanBuilder = SpanEZ.setTextView(mockTextView)
+        spanBuilder = SpanEZ.withTextView(mockTextView)
                             .withContent("This is a dummy content");
         spanBuilder = spy(spanBuilder);
 

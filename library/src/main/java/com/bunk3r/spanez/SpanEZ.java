@@ -76,7 +76,7 @@ public class SpanEZ implements ContentEZ, StyleEZ {
      * @param target The View were the string is located
      * @return an SpanEZ instance were you can apply all the different span styles
      */
-    public static ContentEZ setTextView(TextView target) {
+    public static ContentEZ withTextView(TextView target) {
         return new SpanEZ(target);
     }
 
