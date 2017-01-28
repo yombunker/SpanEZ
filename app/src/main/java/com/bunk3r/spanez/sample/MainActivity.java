@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        SpanEZ.from(sample)
+        SpanEZ.withTextView(sample)
               .withContent(R.string.lorem_ipsum)
               .absoluteSize(Range.from(0, 5), 20)
               .absoluteSizeDP(Range.from(6, 10), 34)
