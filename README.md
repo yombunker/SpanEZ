@@ -1,11 +1,12 @@
+Deprecated if using Kotlin
+--------
+If you are using Kotlin on your project, use [SpanK](https://github.com/yombunker/SpanK) instead (you can think of it as the the newest version of this library, but is meant for Kotlin only). Is better suited for Kotlin, plus has some nice quality of life inprovements that this library doesn't include just because of how verbose it would be. Please check it out and hope you enjoy it.
+
 SpanEZ
 ============
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/yombunker/SpanEZ/blob/master/LICENSE)
 [![Build status](https://travis-ci.org/yombunker/SpanEZ.svg?branch=master)](https://travis-ci.org/yombunker/SpanEZ)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=com.bunk3r:spanez:master)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:master)
-[![Duplicated Code](https://sonarqube.com/api/badges/measure?key=com.bunk3r:spanez:master&metric=duplicated_lines_density)](https://sonarqube.com/dashboard/index/com.bunk3r:spanez:master)
-[![codecov](https://codecov.io/gh/yombunker/SpanEZ/branch/master/graph/badge.svg)](https://codecov.io/gh/yombunker/SpanEZ)
 [![Download](https://api.bintray.com/packages/yombunker/maven/spanez/images/download.svg) ](https://bintray.com/yombunker/maven/spanez/_latestVersion)
 
 Complete abstraction from the Spannable API. Forget about all the boiler plate code and all the
